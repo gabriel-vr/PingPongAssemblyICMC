@@ -11,16 +11,59 @@ main:
 
     loadn r0, #cenario1linha1       ; Endereco para o cenario default
     loadn r2, #0                    ; Cor do cenario. Branco=#0
-    call imprime_tela_sobre         ; Imprime o cenario vazio em cima da tela vazia
+    call imprime_tela_absoluto         ; Imprime o cenario vazio em cima da tela vazia
 
 
     halt
+
+
+
+
+; =============================
+; === IMPRIME TELA ABSOLUTO ===
+; =============================
+; Imprime o conteudo do CENARIO na tela, trocando tudo o que ja esta presente na tela com o conteudo do CENARIO passado como parametro
+; r0: Endereco para string CENARIO
+; r2: COR
+imprime_tela_absoluto:
+    push fr                     ; Salvar registradores
+    push r0
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    loadn r1, #0                ; Primeira posicao na TELA
+    loadn r3, #40               ; Incremento de linha TELA
+    loadn r4, #41               ; Incremento de linha CENARIO (\0 no fim da string fora os 40 bytes da string)
+    loadn r5, #1200             ; POSICAO maxima
+
+    imprime_tela_absoluto_L1:   ; while(r0 != 1200) { Imprime cada linha na tela }
+        cmp r1, r5              ; Endereco CENARIO == #1200
+        jeq imprime_tela_absoluto_OUT1
+        call imprime_string_absoluto
+        add r1, r1, r3          ; posicao da TELA += #40
+        add r0, r0, r4          ; posicao do CENARIO += #41
+        jmp imprime_tela_absoluto_L1
+
+    imprime_tela_absoluto_OUT1:
+    pop r6                      ; Recarregar os registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    pop fr
+ 
 
 ; ==========================
 ; === IMPRIME TELA SOBRE ===
 ; ==========================
 ; Imprime o conteudo do CENARIO na tela, não mudando onde o CENARIO tem ' '
-; Caso o caractere da string que será imprimida seja 0, entao não escreve nada naquela posicao (Para preservar o que ja esta na tela)
+; Caso o caractere da string que será imprimida seja ' ', entao não escreve nada naquela posicao (Para preservar o que ja esta na tela)
 ; r0: Endereco para string CENARIO
 ; r2: COR
 imprime_tela_sobre:
@@ -57,6 +100,52 @@ imprime_tela_sobre:
     pop fr
     rts
 
+
+
+; ===============================
+; === IMPRIME STRING ABSOLUTO ===
+; ===============================
+; Imprime a string do CENARIO na tela, substituindo tudo o que ja esta presente 
+; r0: Endereco para linha CENARIO
+; r1: Endereco para linha TELA
+; r2: COR
+imprime_string_absoluto:
+    push fr                     ; Salvar os registradores
+    push r0
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    loadn r3, #'\0'
+
+    loadi r5, r0                ; Caractere (C) que sera colocado no cenario padrao
+    imprime_string_absoluto_L1:
+        cmp r5, r3              ; Se C == '\0' => fim da funcao
+        jeq imprime_string_absoluto_OUT1
+
+        add r5, r5, r2          ; Adiciona cor
+        outchar r5, r1          ; Coloca o caractere da linha na tela
+        
+        imprime_string_absoluto_OUT2:
+        inc r0
+        inc r1
+        loadi r5, r0            ; Caractere (C) que sera colocado no cenario padrao
+        jmp imprime_string_absoluto_L1
+
+
+    imprime_string_absoluto_OUT1:
+    pop r6                      ; Recarregar os registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    pop fr
+    rts
 
 
 ; ============================
