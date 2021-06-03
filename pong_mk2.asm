@@ -66,7 +66,7 @@ main:
     ; Loop principal do programa
     loop:
     ; breakp
-    call reposicionar_jogador_esq
+    call reposicionar_jogadores
 
     call DELAY
     jmp loop 
@@ -108,10 +108,11 @@ DELAY:
     rts
 
 
-; =====================================
-; === REPOSICIONAR JOGADOR ESQUERDA ===
-; =====================================
-reposicionar_jogador_esq:
+; ==============================
+; === REPOSICIONAR JOGADORES ===
+; ==============================
+; Funcao para adicionar dentro do loop para realizar a movimentação dos jogador da esquerda e da direita a cada iteracao
+reposicionar_jogadores:
     push r0                             ; Salvar registradores
     push r1
     push r2
@@ -133,15 +134,24 @@ reposicionar_jogador_esq:
     pop fr
     ; [FIM DEBUG]. Pode ser removido inteiro sem prejudicar o programa
 
+    ; Identificando comandos para o jogador da esquerda
     loadn r2, #'w'                      ; Atribui a r2 o valor do char 'w'
     cmp r1, r2
-    ceq reposicionar_jogador_esq_cima   ; Chama funcao para reposicionar para cima caso leia 'w'
-
+    ceq reposicionar_jogador_esq_cima   ; Chama funcao para reposicionar jogador da esquerda para cima caso leia 'w'
     loadn r2, #'s'                      ; Atribui a r2 o valor do char 's'
     cmp r1, r2
-    ceq reposicionar_jogador_esq_baixo  ; Chama funcao para reposicionar para baixo caso leia 's'
+    ceq reposicionar_jogador_esq_baixo  ; Chama funcao para reposicionar jogador da esquerda para baixo caso leia 's'
     
+    ; Identificando comandos para o jogador da direita
+    loadn r2, #'i'                      ; Atribui a r2 o valor do char 'i'
+    cmp r1, r2
+    ceq reposicionar_jogador_dir_cima   ; Chama funcao para reposicionar jogador da direita para cima caso leia 'i'
+    loadn r2, #'k'                      ; Atribui a r2 o valor do char 'k'
+    cmp r1, r2
+    ceq reposicionar_jogador_dir_baixo  ; Chama funcao para reposicionar jogador da direita para baixo caso leia 'k'
+
     call reajustar_imagem_jogador_esq   ; Chama funcao para reajustar a imagem do jogador da esquerda, independente do caractere de entrada
+    call reajustar_imagem_jogador_dir   ; Chama funcao para reajustar a imagem do jogador da direita, independente do caractere de entrada
 
     pop r6                              ; Reatribuir registradores
     pop r5
@@ -156,7 +166,7 @@ reposicionar_jogador_esq:
 ; ==========================================
 ; === REPOSICIONAR JOGADOR ESQUERDA CIMA ===
 ; ==========================================
-; Recalcular as variaveis de posicao do jogador da esquerda para cima se mover para cima
+; Recalcular as variaveis de posicao do jogador da esquerda para se mover para cima
 reposicionar_jogador_esq_cima:
     push r0                                 ; Salva registradores
     push r1
@@ -189,7 +199,7 @@ reposicionar_jogador_esq_cima:
 ; ===========================================
 ; === REPOSICIONAR JOGADOR ESQUERDA BAIXO ===
 ; ===========================================
-; Recalcular as variaveis de posicao do jogador da esquerda para cima se mover para cima
+; Recalcular as variaveis de posicao do jogador da esquerda para se mover para cima
 reposicionar_jogador_esq_baixo:
     push r0                                     ; Salva registradores
     push r1
@@ -258,6 +268,124 @@ reajustar_imagem_jogador_esq:
 
     load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atualizada do jogador da esquerda
     store posicaoAnteriorJogadorEsq, r0         ; armazenar o valor atualizado na variavel desatualizada
+
+    pop r6                                      ; Reatribui registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+
+; =========================================
+; === REPOSICIONAR JOGADOR DIREITA CIMA ===
+; =========================================
+; Recalcular as variaveis de posicao do jogador da direita para se mover para cima
+reposicionar_jogador_dir_cima:
+    push r0                                 ; Salva registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    
+    load r0, posicaoJogadorDir              ; r0 recebe a posicao atual do jogador da direita
+    loadn r1, #117                          ; Posição máxima direita 117
+    cmp r0, r1
+    jeq reposicionar_jogador_dir_cima_OUT1  ; Se ja estiver na posicao maxima => termina procedimento
+   
+    loadn r2, #40                           ; Decrementar por 40
+    sub r0, r0, r2                          ; Ajusta a posicao (-40) para se referenciar à linha de cima 
+    store posicaoJogadorDir, r0             ; Salva variavel modificada
+
+    reposicionar_jogador_dir_cima_OUT1:
+    pop r6                                  ; Reatribui regitradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+; ==========================================
+; === REPOSICIONAR JOGADOR DIREITA BAIXO ===
+; ==========================================
+; Recalcular as variaveis de posicao do jogador para da direita se mover para cima
+reposicionar_jogador_dir_baixo:
+    push r0                                     ; Salva registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    load r0, posicaoJogadorDir                  ; r0 recebe a posicao atual do jogador da direita
+    loadn r1, #1117                             ; Posição minima 1117
+    cmp r0, r1
+    jeq reposicionar_jogador_dir_baixo_out1     ; Se ja estiver na posicao minima, termina procedimento
+    
+    loadn r2, #40                               ; Incrementar por 40
+    add r0, r0, r2                              ; Ajusta a posicao (+40) para se referenciar à linha de abaixo 
+    store posicaoJogadorDir, r0                 ; Salva variavel modificada
+
+    reposicionar_jogador_dir_baixo_out1:
+    pop r6                                      ; Reatribui registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+; ========================================
+; === REAJUSTAR IMAGEM JOGADOR DIREITA ===
+; ========================================
+; Funcao reajusta a imagem do jogador da direita, com a variavel posicaoAnteriorJogadorDir desatualizado. Depois atualiza a variavel posicaoAnteriorJogadorDir
+reajustar_imagem_jogador_dir:
+    push r0                                     ; Salva registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    load r0, posicaoAnteriorJogadorDir          ; r0 recebe a posicao desatualizada do jogador da direita
+    
+    ; Limpar(com o caractere ' ') todo o delta y ocupado pelo jogador da direita
+    loadn r3, #' '                              ; Espaço para colocar nas posicoes
+    loadn r2, #40                               ; Quantidade de incremento
+    add r0, r0, r2                              ; Primeira posicao para limpar
+    outchar  r3, r0
+    sub r0, r0, r2                              ; Segunda posicao para limpar
+    outchar r3, r0
+    sub r0, r0, r2                              ; Terceira posicao para limpar
+    outchar r3, r0
+
+    load r0, posicaoJogadorDir                  ; r0 recebe a posicao atualizada do jogador da direita
+
+    ; Reatribuir(com o caractere '$') todo o delta y ocupado pelo jogador da direita
+    loadn r3, #'$'                              ; Espaço para colocar nas posicoes
+    loadn r2, #40                               ; Quantidade de incremento
+    add r0, r0, r2                              ; Primeira posicao para limpar
+    outchar r3, r0
+    sub r0, r0, r2                              ; Segunda posicao para limpar
+    outchar r3, r0
+    sub r0, r0, r2                              ; Terceira posicao para limpar
+    outchar r3, r0
+
+    load r0, posicaoJogadorDir                  ; r0 recebe a posicao atualizada do jogador da direita
+    store posicaoAnteriorJogadorDir, r0         ; armazenar o valor atualizado na variavel desatualizada
 
     pop r6                                      ; Reatribui registradores
     pop r5
