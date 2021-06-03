@@ -44,11 +44,11 @@ static posicaoYAnteriorBola, #14        ; Mesma posicao inical da bola
 ; 0 --+-- +1
 ;     |
 ;    +1
-; velocidadeXBola: var #1
-; static velocidadeXBola, #1              ; Velocidade incial X para a direita
-; 
-; velocidadeYBola: var #2
-; static velocidadeYBola, #0              ; Velocidade incial Y para cima
+velocidadeXBola: var #1
+static velocidadeXBola, #1              ; Velocidade incial X para a direita
+
+velocidadeYBola: var #1
+static velocidadeYBola, #0              ; Velocidade incial Y para cima
 
 
 
