@@ -6,32 +6,49 @@ jmp main
 ; =================
 ; === VARIAVEIS ===
 ; =================
-posicaoJogadorEsq: var #1               ; Posicao atual do jogador. É atualizada quando a posição do jogador deve ser atualizada
-static posicaoJogadorEsq, #561          ; Posicao incial do jogador da esquerda (Linha central: 600 + coluna max direita + 1) = 601
-posicaoAnteriorJogadorEsq: var #1       ; Posicao anterior do jogador. Facilita a impressão. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
-static posicaoAnteriorJogadorEsq, #561  ; Originalmente a posicao anterior do jogador é igual a posicao atual
 
-posicaoJogadorDir: var #1               ; Posicao atual do jogador. É atualizada quando a posicao do jogador deve ser atualizada
-static posicaoJogadorDir, #597          ; Posicao incial do jogador da direita (Linha central: 600 + coluna max esquerda - 2) = 637
-posicaoAnteriorJogadorDir: var #1       ; Posicao anterior do jogador. Facilita a impressao. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
-static posicaoAnteriorJogadorDir, #597  ; Originalmente a posicao anterior do jogador é igual a posicao atual
+; Legenda coordenadas jogadores:
+;0   +-----------> (x)
+;    |           +
+;    |
+;    |
+;    | +
+;   (y)
+posicaoXJogadorEsq: var #1              ; Coordenada X jogador esquerda. Variavel se mantem estatica no jogo
+static posicaoXJogadorEsq, #1           ; Jogador da esquerda permanece estatico na coordenada X
+posicaoYJogadorEsq: var #1              ; Posicao atual do jogador. É atualizada quando a posição do jogador deve ser atualizada
+static posicaoYJogadorEsq, #14          ; Posicao incial do jogador da esquerda (Linha central: 600 + coluna max direita + 1) = 601
+posicaoYAnteriorJogadorEsq: var #1      ; Posicao anterior do jogador. Facilita a impressão. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
+static posicaoYAnteriorJogadorEsq, #14  ; Originalmente a posicao anterior do jogador é igual a posicao atual
 
-posicaoBola: var #1                     ; Posicao da bola, é o que guia qual a posicao atual da bola
-static posicaoBola, #619                ; (Centro das duas posicoes (637 + 601)/2)
-posicaoAnteriorBola: var #1             ; A mesma ideia da posicao anterior ao imprimir os jogadores
-static posicaoAnteriorBola, #619        ; Mesma posicao inical da bola
+posicaoXJogadorDir: var #37             ; Coordenada X jogador direita. Variavel se mantem estatica no jogo
+static posicaoXJogadorDir, #37          ; 
+posicaoYJogadorDir: var #1              ; Posicao atual do jogador. É atualizada quando a posicao do jogador deve ser atualizada
+static posicaoYJogadorDir, #14          ; Posicao incial do jogador da direita (Linha central: 600 + coluna max esquerda - 2) = 637
+posicaoYAnteriorJogadorDir: var #1      ; Posicao anterior do jogador. Facilita a impressao. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
+static posicaoYAnteriorJogadorDir, #14  ; Originalmente a posicao anterior do jogador é igual a posicao atual
+
+posicaoXBola: var #1                    ; Posicao da bola, é o que guia qual a posicao atual da bola
+static posicaoXBola, #14                ; (Centro das duas posicoes (637 + 601)/2)
+posicaoXAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
+static posicaoXAnteriorBola, #14        ; Mesma posicao inical da bola
+posicaoYBola: var #1                    ; Posicao da bola, é o que guia qual a posicao atual da bola
+static posicaoYBola, #14                ; (Centro das duas posicoes (637 + 601)/2)
+posicaoYAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
+static posicaoYAnteriorBola, #14        ; Mesma posicao inical da bola
+
 
 ; Legenda velocidade bola:
-;    +1
+;    -1
 ;     |
 ;-1 --+-- +1
 ;     |
-;    -1
-velocidadeXBola: var #1
-static velocidadeXBola, #1              ; Velocidade incial X para a direita
-
-velocidadeYBola: var #2
-static velocidadeYBola, #1              ; Velocidade incial Y para cima
+;    +1
+; velocidadeXBola: var #1
+; static velocidadeXBola, #1              ; Velocidade incial X para a direita
+; 
+; velocidadeYBola: var #2
+; static velocidadeYBola, #-1             ; Velocidade incial Y para cima
 
 
 
@@ -65,7 +82,7 @@ main:
     ; ============
     ; Loop principal do programa
     loop:
-    ; breakp
+    
     call reposicionar_jogadores
 
     call DELAY
@@ -141,7 +158,7 @@ reposicionar_jogadores:
     loadn r2, #'s'                      ; Atribui a r2 o valor do char 's'
     cmp r1, r2
     ceq reposicionar_jogador_esq_baixo  ; Chama funcao para reposicionar jogador da esquerda para baixo caso leia 's'
-    
+
     ; Identificando comandos para o jogador da direita
     loadn r2, #'i'                      ; Atribui a r2 o valor do char 'i'
     cmp r1, r2
@@ -149,6 +166,7 @@ reposicionar_jogadores:
     loadn r2, #'k'                      ; Atribui a r2 o valor do char 'k'
     cmp r1, r2
     ceq reposicionar_jogador_dir_baixo  ; Chama funcao para reposicionar jogador da direita para baixo caso leia 'k'
+
 
     call reajustar_imagem_jogador_esq   ; Chama funcao para reajustar a imagem do jogador da esquerda, independente do caractere de entrada
     call reajustar_imagem_jogador_dir   ; Chama funcao para reajustar a imagem do jogador da direita, independente do caractere de entrada
@@ -176,14 +194,14 @@ reposicionar_jogador_esq_cima:
     push r5
     push r6
 
-    load r0, posicaoJogadorEsq              ; r0 recebe a posicao atual do jogador da esquerda
-    loadn r1, #81                           ; Posição máxima esquerda 81
+    load r0, posicaoYJogadorEsq             ; r0 recebe a posicao atual do jogador da esquerda
+    loadn r1, #2                            ; Posição máxima y = 2
     cmp r0, r1
     jeq reposicionar_jogador_esq_cima_OUT1  ; Se ja estiver na posicao maxima => termina procedimento
    
-    loadn r2, #40                           ; Decrementar por 40
-    sub r0, r0, r2                          ; Ajusta a posicao (-40) para se referenciar à linha de cima 
-    store posicaoJogadorEsq, r0             ; Salva variavel modificada
+    loadn r2, #1                            ; Decrementar por 1
+    sub r0, r0, r2                          ; Ajusta a posicao (-1) para se referenciar à linha de cima 
+    store posicaoYJogadorEsq, r0            ; Salva variavel modificada
 
     reposicionar_jogador_esq_cima_OUT1:
     pop r6                                  ; Reatribui regitradores
@@ -209,14 +227,14 @@ reposicionar_jogador_esq_baixo:
     push r5
     push r6
 
-    load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atual do jogador da esquerda
-    loadn r1, #1081                             ; Posição minima 1081
+    load r0, posicaoYJogadorEsq                 ; r0 recebe a posicao atual do jogador da esquerda
+    loadn r1, #27                               ; Posição minima 37
     cmp r0, r1
     jeq reposicionar_jogador_esq_baixo_out1     ; Se ja estiver na posicao minima, termina procedimento
     
-    loadn r2, #40                               ; Incrementar por 40
-    add r0, r0, r2                              ; Ajusta a posicao (+40) para se referenciar à linha de abaixo 
-    store posicaoJogadorEsq, r0                 ; Salva variavel modificada
+    loadn r2, #1                                ; Incrementar por 1
+    add r0, r0, r2                              ; Ajusta a posicao (+1) para se referenciar à linha de abaixo 
+    store posicaoYJogadorEsq, r0                ; Salva variavel modificada
 
     reposicionar_jogador_esq_baixo_out1:
     pop r6                                      ; Reatribui registradores
@@ -242,11 +260,16 @@ reajustar_imagem_jogador_esq:
     push r5
     push r6
 
-    load r0, posicaoAnteriorJogadorEsq          ; r0 recebe a posicao desatualizada do jogador da esquerda
-    
+    load r0, posicaoYAnteriorJogadorEsq         ; r0 recebe a posicao desatualizada do jogador da esquerda
+    load r1, posicaoXJogadorEsq                 ; r1 recebe a coordenada X do jogador
+
     ; Limpar(com o caractere ' ') todo o delta y ocupado pelo jogador da esquerda
     loadn r3, #' '                              ; Espaço para colocar nas posicoes
-    loadn r2, #40                               ; Quantidade de incremento
+    loadn r2, #40                               ; Fator de multiplicacao para posicionar na tela
+    
+    mul r0, r0, r2                              ; Acha linha do jogador multiplicando coordenada Y * 40 (numeros de coluna por linha)
+    add r0, r0, r1                              ; Acha posicao do jogador na linha adicionando a coordenada X + posicao da coluna
+
     add r0, r0, r2                              ; Primeira posicao para limpar
     outchar  r3, r0
     sub r0, r0, r2                              ; Segunda posicao para limpar
@@ -254,11 +277,16 @@ reajustar_imagem_jogador_esq:
     sub r0, r0, r2                              ; Terceira posicao para limpar
     outchar r3, r0
 
-    load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atualizada do jogador da esquerda
+    load r0, posicaoYJogadorEsq                 ; r0 recebe a posicao atualizada do jogador da esquerda
+    load r1, posicaoXJogadorEsq                 ; r1 recebe a coordenada X do jogador
 
     ; Reatribuir(com o caractere '$') todo o delta y ocupado pelo jogador da esquerda
     loadn r3, #'$'                              ; Espaço para colocar nas posicoes
     loadn r2, #40                               ; Quantidade de incremento
+
+    mul r0, r0, r2                              ; Acha linha do jogador multiplicando coordenada Y * 40 (numeros de coluna por linha)
+    add r0, r0, r1                              ; Acha posicao do jogador na linha adicionando a coordenada X + posicao da coluna
+
     add r0, r0, r2                              ; Primeira posicao para limpar
     outchar r3, r0
     sub r0, r0, r2                              ; Segunda posicao para limpar
@@ -266,8 +294,8 @@ reajustar_imagem_jogador_esq:
     sub r0, r0, r2                              ; Terceira posicao para limpar
     outchar r3, r0
 
-    load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atualizada do jogador da esquerda
-    store posicaoAnteriorJogadorEsq, r0         ; armazenar o valor atualizado na variavel desatualizada
+    load r0, posicaoYJogadorEsq                  ; r0 recebe a posicao atualizada do jogador da esquerda
+    store posicaoYAnteriorJogadorEsq, r0         ; armazenar o valor atualizado na variavel desatualizada
 
     pop r6                                      ; Reatribui registradores
     pop r5
@@ -293,15 +321,14 @@ reposicionar_jogador_dir_cima:
     push r5
     push r6
 
-    
-    load r0, posicaoJogadorDir              ; r0 recebe a posicao atual do jogador da direita
-    loadn r1, #117                          ; Posição máxima direita 117
+    load r0, posicaoYJogadorDir             ; r0 recebe a posicao atual do jogador da direita
+    loadn r1, #2                            ; Posição máxima y = 2
     cmp r0, r1
     jeq reposicionar_jogador_dir_cima_OUT1  ; Se ja estiver na posicao maxima => termina procedimento
    
-    loadn r2, #40                           ; Decrementar por 40
-    sub r0, r0, r2                          ; Ajusta a posicao (-40) para se referenciar à linha de cima 
-    store posicaoJogadorDir, r0             ; Salva variavel modificada
+    loadn r2, #1                            ; Decrementar por 1
+    sub r0, r0, r2                          ; Ajusta a posicao (-1) para se referenciar à linha de cima 
+    store posicaoYJogadorDir, r0            ; Salva variavel modificada
 
     reposicionar_jogador_dir_cima_OUT1:
     pop r6                                  ; Reatribui regitradores
@@ -312,6 +339,7 @@ reposicionar_jogador_dir_cima:
     pop r1
     pop r0
     rts
+
 
 
 ; ==========================================
@@ -327,14 +355,14 @@ reposicionar_jogador_dir_baixo:
     push r5
     push r6
 
-    load r0, posicaoJogadorDir                  ; r0 recebe a posicao atual do jogador da direita
-    loadn r1, #1117                             ; Posição minima 1117
+    load r0, posicaoYJogadorDir                 ; r0 recebe a posicao atual do jogador da direita
+    loadn r1, #27                               ; Posição minima 37
     cmp r0, r1
     jeq reposicionar_jogador_dir_baixo_out1     ; Se ja estiver na posicao minima, termina procedimento
     
-    loadn r2, #40                               ; Incrementar por 40
-    add r0, r0, r2                              ; Ajusta a posicao (+40) para se referenciar à linha de abaixo 
-    store posicaoJogadorDir, r0                 ; Salva variavel modificada
+    loadn r2, #1                                ; Incrementar por 1
+    add r0, r0, r2                              ; Ajusta a posicao (+1) para se referenciar à linha de abaixo 
+    store posicaoYJogadorDir, r0                ; Salva variavel modificada
 
     reposicionar_jogador_dir_baixo_out1:
     pop r6                                      ; Reatribui registradores
@@ -345,6 +373,7 @@ reposicionar_jogador_dir_baixo:
     pop r1
     pop r0
     rts
+
 
 
 ; ========================================
@@ -360,11 +389,16 @@ reajustar_imagem_jogador_dir:
     push r5
     push r6
 
-    load r0, posicaoAnteriorJogadorDir          ; r0 recebe a posicao desatualizada do jogador da direita
-    
+    load r0, posicaoYAnteriorJogadorDir         ; r0 recebe a posicao desatualizada do jogador da direita
+    load r1, posicaoXJogadorDir                 ; r1 recebe a coordenada X do jogador
+
     ; Limpar(com o caractere ' ') todo o delta y ocupado pelo jogador da direita
     loadn r3, #' '                              ; Espaço para colocar nas posicoes
-    loadn r2, #40                               ; Quantidade de incremento
+    loadn r2, #40                               ; Fator de multiplicacao para posicionar na tela
+    
+    mul r0, r0, r2                              ; Acha linha do jogador multiplicando coordenada Y * 40 (numeros de coluna por linha)
+    add r0, r0, r1                              ; Acha posicao do jogador na linha adicionando a coordenada X + posicao da coluna
+
     add r0, r0, r2                              ; Primeira posicao para limpar
     outchar  r3, r0
     sub r0, r0, r2                              ; Segunda posicao para limpar
@@ -372,11 +406,16 @@ reajustar_imagem_jogador_dir:
     sub r0, r0, r2                              ; Terceira posicao para limpar
     outchar r3, r0
 
-    load r0, posicaoJogadorDir                  ; r0 recebe a posicao atualizada do jogador da direita
+    load r0, posicaoYJogadorDir                 ; r0 recebe a posicao atualizada do jogador da direita
+    load r1, posicaoXJogadorDir                 ; r1 recebe a coordenada X do jogador
 
     ; Reatribuir(com o caractere '$') todo o delta y ocupado pelo jogador da direita
     loadn r3, #'$'                              ; Espaço para colocar nas posicoes
     loadn r2, #40                               ; Quantidade de incremento
+
+    mul r0, r0, r2                              ; Acha linha do jogador multiplicando coordenada Y * 40 (numeros de coluna por linha)
+    add r0, r0, r1                              ; Acha posicao do jogador na linha adicionando a coordenada X + posicao da coluna
+
     add r0, r0, r2                              ; Primeira posicao para limpar
     outchar r3, r0
     sub r0, r0, r2                              ; Segunda posicao para limpar
@@ -384,8 +423,8 @@ reajustar_imagem_jogador_dir:
     sub r0, r0, r2                              ; Terceira posicao para limpar
     outchar r3, r0
 
-    load r0, posicaoJogadorDir                  ; r0 recebe a posicao atualizada do jogador da direita
-    store posicaoAnteriorJogadorDir, r0         ; armazenar o valor atualizado na variavel desatualizada
+    load r0, posicaoYJogadorDir                  ; r0 recebe a posicao atualizada do jogador da direita
+    store posicaoYAnteriorJogadorDir, r0         ; armazenar o valor atualizado na variavel desatualizada
 
     pop r6                                      ; Reatribui registradores
     pop r5
