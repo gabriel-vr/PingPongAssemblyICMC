@@ -39,16 +39,16 @@ static posicaoYAnteriorBola, #14        ; Mesma posicao inical da bola
 
 
 ; Legenda velocidade bola:
-;    -1
+;     0
 ;     |
-;-1 --+-- +1
+; 0 --+-- +1
 ;     |
 ;    +1
-; velocidadeXBola: var #1
-; static velocidadeXBola, #1              ; Velocidade incial X para a direita
-; 
-; velocidadeYBola: var #2
-; static velocidadeYBola, #-1             ; Velocidade incial Y para cima
+velocidadeXBola: var #1
+static velocidadeXBola, #1              ; Velocidade incial X para a direita
+
+velocidadeYBola: var #1
+static velocidadeYBola, #0              ; Velocidade incial Y para cima
 
 
 
@@ -84,6 +84,8 @@ main:
     loop:
     
     call reposicionar_jogadores
+
+    call reposicionar_bola
 
     call DELAY
     jmp loop 
@@ -123,6 +125,37 @@ DELAY:
     pop r0
     pop fr
     rts
+
+
+; =========================
+; === REPOSICIONAR BOLA ===
+; =========================
+; Funcao para adicionar dentro do loop para realizar a movimentação da bola
+reposicionar_bola:
+    push r0                             ; Salvar registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    ; Checar colisao bola
+
+    ; Reposicionar coordenadas da bola
+
+    ; Reajustar imagem da bola baseado na coordenada desatualizada da bola
+
+    pop r6                              ; Reatribuir registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
 
 
 ; ==============================
