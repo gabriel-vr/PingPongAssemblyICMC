@@ -64,6 +64,14 @@ main:
 
     call zera_tela                      ; Apagar toda a tela antes de comecar o programa
 
+    loadn r0, #cenario4linha1           ; Carrega tela inicial
+    loadn r2, #0
+    call imprime_tela_absoluto          ; Imprime a tela
+
+    call espera_entrada                 ; Espera caractere ENTER para iniciar o jogo
+
+    call zera_tela                      ; Apaga a tela para iniciar o jogo
+
     loadn r0, #cenario1linha1           ; Endereco para o cenario default
     loadn r2, #0                        ; Cor do cenario. Branco=#0
     call imprime_tela_absoluto          ; Imprime o cenario vazio em cima da tela vazia
@@ -141,11 +149,11 @@ reposicionar_bola:
     push r5
     push r6
 
-    ; Checar colisao bola
+    ; 1) Checar colisao bola
 
-    ; Reposicionar coordenadas da bola
+    ; 2) Reposicionar coordenadas da bola
 
-    ; Reajustar imagem da bola baseado na coordenada desatualizada da bola
+    ; 3) Reajustar imagem da bola baseado na coordenada desatualizada da bola
 
     pop r6                              ; Reatribuir registradores
     pop r5
@@ -157,6 +165,38 @@ reposicionar_bola:
     pop fr
     rts
 
+
+
+; ======================
+; === ESPERA ENTRADA ===
+; ======================
+; Funcao para adicionar dentro do loop para realizar a movimentação da bola
+espera_entrada:
+    push fr
+    push r0                             ; Salvar registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    espera_entrada_L1:
+    inchar r0                           ; Le entrada
+    loadn r1, #255                      ; Armazena a entrada vazia em r1 (255)
+
+    cmp r0, r1                          ; Compara se não teve entrada
+    jeq espera_entrada_L1               ; Se não teve entrada => Le entrada novamente
+
+    pop r6                              ; Reatribuir registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    pop fr
+    rts
 
 
 
@@ -827,3 +867,35 @@ cenario3linha27:   string "                                        "
 cenario3linha28:   string "                                        "
 cenario3linha29:   string "                                        "
 cenario3linha30:   string "                                        "
+
+; CENÁRIO: Dois jogadores e bola na posição default
+cenario4linha1:    string "                                        "
+cenario4linha2:    string "                                        "
+cenario4linha3:    string "                                        "
+cenario4linha4:    string "                                        "
+cenario4linha5:    string "                                        "
+cenario4linha6:    string "                                        "
+cenario4linha7:    string "                                        "
+cenario4linha8:    string "                                        "
+cenario4linha9:    string "                                        "
+cenario4linha10:   string "                                        "
+cenario4linha11:   string "                                        "
+cenario4linha12:   string "                                        "
+cenario4linha13:   string "                                        "
+cenario4linha14:   string "                                        "
+cenario4linha15:   string "  Para iniciar o jogo pressione ENTER:  "
+cenario4linha16:   string "                                        "
+cenario4linha17:   string "                                        "
+cenario4linha18:   string "                                        "
+cenario4linha19:   string "                                        "
+cenario4linha20:   string "                                        "
+cenario4linha21:   string "                                        "
+cenario4linha22:   string "                                        "
+cenario4linha23:   string "                                        "
+cenario4linha24:   string "                                        "
+cenario4linha25:   string "                                        "
+cenario4linha26:   string "                                        "
+cenario4linha27:   string "                                        "
+cenario4linha28:   string "                                        "
+cenario4linha29:   string "                                        "
+cenario4linha30:   string "                                        "
