@@ -132,6 +132,7 @@ DELAY:
 ; =========================
 ; Funcao para adicionar dentro do loop para realizar a movimentação da bola
 reposicionar_bola:
+    push fr
     push r0                             ; Salvar registradores
     push r1
     push r2
@@ -153,6 +154,7 @@ reposicionar_bola:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -163,6 +165,7 @@ reposicionar_bola:
 ; ==============================
 ; Funcao para adicionar dentro do loop para realizar a movimentação dos jogador da esquerda e da direita a cada iteracao
 reposicionar_jogadores:
+    push fr
     push r0                             ; Salvar registradores
     push r1
     push r2
@@ -211,6 +214,7 @@ reposicionar_jogadores:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -219,6 +223,7 @@ reposicionar_jogadores:
 ; ==========================================
 ; Recalcular as variaveis de posicao do jogador da esquerda para se mover para cima
 reposicionar_jogador_esq_cima:
+    push fr
     push r0                                 ; Salva registradores
     push r1
     push r2
@@ -244,6 +249,7 @@ reposicionar_jogador_esq_cima:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -252,6 +258,7 @@ reposicionar_jogador_esq_cima:
 ; ===========================================
 ; Recalcular as variaveis de posicao do jogador da esquerda para se mover para cima
 reposicionar_jogador_esq_baixo:
+    push fr
     push r0                                     ; Salva registradores
     push r1
     push r2
@@ -277,6 +284,7 @@ reposicionar_jogador_esq_baixo:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -285,6 +293,7 @@ reposicionar_jogador_esq_baixo:
 ; =========================================
 ; Funcao reajusta a imagem do jogador da esquerda, com a variavel posicaoAnteriorJogadorEsq desatualizado. Depois atualiza a variavel posicaoAnteriorJogadorEsq
 reajustar_imagem_jogador_esq:
+    push fr
     push r0                                     ; Salva registradores
     push r1
     push r2
@@ -337,6 +346,7 @@ reajustar_imagem_jogador_esq:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -346,6 +356,7 @@ reajustar_imagem_jogador_esq:
 ; =========================================
 ; Recalcular as variaveis de posicao do jogador da direita para se mover para cima
 reposicionar_jogador_dir_cima:
+    push fr
     push r0                                 ; Salva registradores
     push r1
     push r2
@@ -371,6 +382,7 @@ reposicionar_jogador_dir_cima:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -380,6 +392,7 @@ reposicionar_jogador_dir_cima:
 ; ==========================================
 ; Recalcular as variaveis de posicao do jogador para da direita se mover para cima
 reposicionar_jogador_dir_baixo:
+    push fr
     push r0                                     ; Salva registradores
     push r1
     push r2
@@ -405,6 +418,7 @@ reposicionar_jogador_dir_baixo:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
@@ -414,6 +428,7 @@ reposicionar_jogador_dir_baixo:
 ; ========================================
 ; Funcao reajusta a imagem do jogador da direita, com a variavel posicaoAnteriorJogadorDir desatualizado. Depois atualiza a variavel posicaoAnteriorJogadorDir
 reajustar_imagem_jogador_dir:
+    push fr
     push r0                                     ; Salva registradores
     push r1
     push r2
@@ -466,6 +481,7 @@ reajustar_imagem_jogador_dir:
     pop r2
     pop r1
     pop r0
+    pop fr
     rts
 
 
