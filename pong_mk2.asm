@@ -2,20 +2,271 @@
 jmp main
 
 
-; ================
-; ===   MAIN   ===
-; ================
+
+; =================
+; === VARIAVEIS ===
+; =================
+posicaoJogadorEsq: var #1               ; Posicao atual do jogador. É atualizada quando a posição do jogador deve ser atualizada
+static posicaoJogadorEsq, #561          ; Posicao incial do jogador da esquerda (Linha central: 600 + coluna max direita + 1) = 601
+posicaoAnteriorJogadorEsq: var #1       ; Posicao anterior do jogador. Facilita a impressão. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
+static posicaoAnteriorJogadorEsq, #561  ; Originalmente a posicao anterior do jogador é igual a posicao atual
+
+posicaoJogadorDir: var #1               ; Posicao atual do jogador. É atualizada quando a posicao do jogador deve ser atualizada
+static posicaoJogadorDir, #597          ; Posicao incial do jogador da direita (Linha central: 600 + coluna max esquerda - 2) = 637
+posicaoAnteriorJogadorDir: var #1       ; Posicao anterior do jogador. Facilita a impressao. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
+static posicaoAnteriorJogadorDir, #597  ; Originalmente a posicao anterior do jogador é igual a posicao atual
+
+posicaoBola: var #1                     ; Posicao da bola, é o que guia qual a posicao atual da bola
+static posicaoBola, #619                ; (Centro das duas posicoes (637 + 601)/2)
+posicaoAnteriorBola: var #1             ; A mesma ideia da posicao anterior ao imprimir os jogadores
+static posicaoAnteriorBola, #619        ; Mesma posicao inical da bola
+
+; Legenda velocidade bola:
+;    +1
+;     |
+;-1 --+-- +1
+;     |
+;    -1
+velocidadeXBola: var #1
+static velocidadeXBola, #1              ; Velocidade incial X para a direita
+
+velocidadeYBola: var #2
+static velocidadeYBola, #1              ; Velocidade incial Y para cima
+
+
+
+; ============
+; === MAIN ===
+; ============
+; Funcao principal do programa
 main:
-    ; Funcao para apagar toda a tela antes de comecar o programa (DESABILITADO PARA DEBUGGING)
-    ; call zera_tela
 
-    loadn r0, #cenario1linha1       ; Endereco para o cenario default
-    loadn r2, #0                    ; Cor do cenario. Branco=#0
-    call imprime_tela_absoluto         ; Imprime o cenario vazio em cima da tela vazia
+    ; =============
+    ; === SETUP ===
+    ; =============
+
+    call zera_tela                      ; Apagar toda a tela antes de comecar o programa
+
+    loadn r0, #cenario1linha1           ; Endereco para o cenario default
+    loadn r2, #0                        ; Cor do cenario. Branco=#0
+    call imprime_tela_absoluto          ; Imprime o cenario vazio em cima da tela vazia
+
+    loadn r0, #cenario2linha1           ; Endereço para rede do jogo
+    loadn r2, #0                        ; Cor do cenario. Branco=0
+    call imprime_tela_sobre             ; Imprime cenario sobre o ja existente
+
+    loadn r0, #cenario3linha1           ; Endereço para posicionar jogadores e bolinha
+    loadn r2, #0                        ; Cor. Branco=0
+    call imprime_tela_sobre             ; Imprime cenario sobre o ja existente
 
 
+    ; ============
+    ; === LOOP ===
+    ; ============
+    ; Loop principal do programa
+    loop:
+    ; breakp
+    call reposicionar_jogador_esq
+
+    call DELAY
+    jmp loop 
     halt
 
+
+
+; =============
+; === DELAY ===
+; =============
+; Funcao para adicionar intervalo entre ações
+; Valor atribuido ao registrador r2 dentro da função é o principal causador do delay. Mude-o caso precise de mais ou menos delay
+DELAY:
+    push fr                 ; Salvar registradores
+    push r0
+    push r1
+    push r2
+
+    loadn r0, #0
+
+    ; loadn r2, #128        ; VARIAVEL PARA REAJUSTAR A VELOCIDADE DO JOGO
+    loadn r2, #1            ; Inicio loop externo, decrementa r2 até chegar a 0
+    DELAY_L1:
+
+    loadn r1, #32768        ; Inicio do loop interno, decremente r1 até chegar a 0
+    DELAY_L2:
+    dec r1                  ; Parte para decrementar o valor de r1
+    cmp r1, r0
+    jne DELAY_L2
+    
+    dec r2                  ; Parte para decrementar o valor de r2
+    cmp r2, r0
+    jne DELAY_L1
+
+    pop r2                  ; Reatribuir registradores
+    pop r1
+    pop r0
+    pop fr
+    rts
+
+
+; =====================================
+; === REPOSICIONAR JOGADOR ESQUERDA ===
+; =====================================
+reposicionar_jogador_esq:
+    push r0                             ; Salvar registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+   
+    inchar r1                           ; Le entrada para controlar a nave
+
+    ; [DEBUG]. Parte de código foi utilizada nessa funcao para mostrar no canto superior esquerdo qual o valor do teclado encontrado
+    push fr
+    loadn r3, #255
+    cmp r1, r3
+    jeq A
+    loadn r3, #0
+    outchar r1, r3
+    A:
+    pop fr
+    ; [FIM DEBUG]. Pode ser removido inteiro sem prejudicar o programa
+
+    loadn r2, #'w'                      ; Atribui a r2 o valor do char 'w'
+    cmp r1, r2
+    ceq reposicionar_jogador_esq_cima   ; Chama funcao para reposicionar para cima caso leia 'w'
+
+    loadn r2, #'s'                      ; Atribui a r2 o valor do char 's'
+    cmp r1, r2
+    ceq reposicionar_jogador_esq_baixo  ; Chama funcao para reposicionar para baixo caso leia 's'
+    
+    call reajustar_imagem_jogador_esq   ; Chama funcao para reajustar a imagem do jogador da esquerda, independente do caractere de entrada
+
+    pop r6                              ; Reatribuir registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+; ==========================================
+; === REPOSICIONAR JOGADOR ESQUERDA CIMA ===
+; ==========================================
+; Recalcular as variaveis de posicao do jogador da esquerda para cima se mover para cima
+reposicionar_jogador_esq_cima:
+    push r0                                 ; Salva registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    load r0, posicaoJogadorEsq              ; r0 recebe a posicao atual do jogador da esquerda
+    loadn r1, #81                           ; Posição máxima esquerda 81
+    cmp r0, r1
+    jeq reposicionar_jogador_esq_cima_OUT1  ; Se ja estiver na posicao maxima => termina procedimento
+   
+    loadn r2, #40                           ; Decrementar por 40
+    sub r0, r0, r2                          ; Ajusta a posicao (-40) para se referenciar à linha de cima 
+    store posicaoJogadorEsq, r0             ; Salva variavel modificada
+
+    reposicionar_jogador_esq_cima_OUT1:
+    pop r6                                  ; Reatribui regitradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+; ===========================================
+; === REPOSICIONAR JOGADOR ESQUERDA BAIXO ===
+; ===========================================
+; Recalcular as variaveis de posicao do jogador da esquerda para cima se mover para cima
+reposicionar_jogador_esq_baixo:
+    push r0                                     ; Salva registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atual do jogador da esquerda
+    loadn r1, #1081                             ; Posição minima 1081
+    cmp r0, r1
+    jeq reposicionar_jogador_esq_baixo_out1     ; Se ja estiver na posicao minima, termina procedimento
+    
+    loadn r2, #40                               ; Incrementar por 40
+    add r0, r0, r2                              ; Ajusta a posicao (+40) para se referenciar à linha de abaixo 
+    store posicaoJogadorEsq, r0                 ; Salva variavel modificada
+
+    reposicionar_jogador_esq_baixo_out1:
+    pop r6                                      ; Reatribui registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+; =========================================
+; === REAJUSTAR IMAGEM JOGADOR ESQUERDA ===
+; =========================================
+; Funcao reajusta a imagem do jogador da esquerda, com a variavel posicaoAnteriorJogadorEsq desatualizado. Depois atualiza a variavel posicaoAnteriorJogadorEsq
+reajustar_imagem_jogador_esq:
+    push r0                                     ; Salva registradores
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+    push r6
+
+    load r0, posicaoAnteriorJogadorEsq          ; r0 recebe a posicao desatualizada do jogador da esquerda
+    
+    ; Limpar(com o caractere ' ') todo o delta y ocupado pelo jogador da esquerda
+    loadn r3, #' '                              ; Espaço para colocar nas posicoes
+    loadn r2, #40                               ; Quantidade de incremento
+    add r0, r0, r2                              ; Primeira posicao para limpar
+    outchar  r3, r0
+    sub r0, r0, r2                              ; Segunda posicao para limpar
+    outchar r3, r0
+    sub r0, r0, r2                              ; Terceira posicao para limpar
+    outchar r3, r0
+
+    load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atualizada do jogador da esquerda
+
+    ; Reatribuir(com o caractere '$') todo o delta y ocupado pelo jogador da esquerda
+    loadn r3, #'$'                              ; Espaço para colocar nas posicoes
+    loadn r2, #40                               ; Quantidade de incremento
+    add r0, r0, r2                              ; Primeira posicao para limpar
+    outchar r3, r0
+    sub r0, r0, r2                              ; Segunda posicao para limpar
+    outchar r3, r0
+    sub r0, r0, r2                              ; Terceira posicao para limpar
+    outchar r3, r0
+
+    load r0, posicaoJogadorEsq                  ; r0 recebe a posicao atualizada do jogador da esquerda
+    store posicaoAnteriorJogadorEsq, r0         ; armazenar o valor atualizado na variavel desatualizada
+
+    pop r6                                      ; Reatribui registradores
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
 
 
 
@@ -57,7 +308,8 @@ imprime_tela_absoluto:
     pop r1
     pop r0
     pop fr
- 
+    rts
+
 
 ; ==========================
 ; === IMPRIME TELA SOBRE ===
@@ -148,6 +400,7 @@ imprime_string_absoluto:
     rts
 
 
+
 ; ============================
 ; === IMPRIME STRING SOBRE ===
 ; ============================
@@ -196,6 +449,7 @@ imprime_string_sobre:
     pop r0
     pop fr
     rts
+
 
 
 ; =================
@@ -262,34 +516,98 @@ cenario0linha28:   string "                                        "
 cenario0linha29:   string "                                        "
 cenario0linha30:   string "                                        "
 
-; Cenário base do jogo PING PONG
-cenario1linha1:    string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-cenario1linha2:    string "                   %                    "
-cenario1linha3:    string "                   %                    "
-cenario1linha4:    string "                   %                    "
-cenario1linha5:    string "                   %                    "
-cenario1linha6:    string "                   %                    "
-cenario1linha7:    string "                   %                    "
-cenario1linha8:    string "                   %                    "
-cenario1linha9:    string "                   %                    "
-cenario1linha10:   string "                   %                    "
-cenario1linha11:   string "                   %                    "
-cenario1linha12:   string "                   %                    "
-cenario1linha13:   string "                   %                    "
-cenario1linha14:   string "                   %                    "
-cenario1linha15:   string "                   %                    "
-cenario1linha16:   string "                   %                    "
-cenario1linha17:   string "                   %                    "
-cenario1linha18:   string "                   %                    "
-cenario1linha19:   string "                   %                    "
-cenario1linha20:   string "                   %                    "
-cenario1linha21:   string "                   %                    "
-cenario1linha22:   string "                   %                    "
-cenario1linha23:   string "                   %                    "
-cenario1linha24:   string "                   %                    "
-cenario1linha25:   string "                   %                    "
-cenario1linha26:   string "                   %                    "
-cenario1linha27:   string "                   %                    "
-cenario1linha28:   string "                   %                    "
-cenario1linha29:   string "                   %                    "
-cenario1linha30:   string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+; CENÁRIO: Limites lateriais jogo de ping-pong
+cenario1linha1:    string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
+cenario1linha2:    string "&                                     ! "
+cenario1linha3:    string "&                                     ! "
+cenario1linha4:    string "&                                     ! "
+cenario1linha5:    string "&                                     ! "
+cenario1linha6:    string "&                                     ! "
+cenario1linha7:    string "&                                     ! "
+cenario1linha8:    string "&                                     ! "
+cenario1linha9:    string "&                                     ! "
+cenario1linha10:   string "&                                     ! "
+cenario1linha11:   string "&                                     ! "
+cenario1linha12:   string "&                                     ! "
+cenario1linha13:   string "&                                     ! "
+cenario1linha14:   string "&                                     ! "
+cenario1linha15:   string "&                                     ! "
+cenario1linha16:   string "&                                     ! "
+cenario1linha17:   string "&                                     ! "
+cenario1linha18:   string "&                                     ! "
+cenario1linha19:   string "&                                     ! "
+cenario1linha20:   string "&                                     ! "
+cenario1linha21:   string "&                                     ! "
+cenario1linha22:   string "&                                     ! "
+cenario1linha23:   string "&                                     ! "
+cenario1linha24:   string "&                                     ! "
+cenario1linha25:   string "&                                     ! "
+cenario1linha26:   string "&                                     ! "
+cenario1linha27:   string "&                                     ! "
+cenario1linha28:   string "&                                     ! "
+cenario1linha29:   string "&                                     ! "
+cenario1linha30:   string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
+
+; CENÁRIO: Rede do jogo de ping-pong
+cenario2linha1:    string "                                        "
+cenario2linha2:    string "                   %                    "
+cenario2linha3:    string "                   %                    "
+cenario2linha4:    string "                   %                    "
+cenario2linha5:    string "                   %                    "
+cenario2linha6:    string "                   %                    "
+cenario2linha7:    string "                   %                    "
+cenario2linha8:    string "                   %                    "
+cenario2linha9:    string "                   %                    "
+cenario2linha10:   string "                   %                    "
+cenario2linha11:   string "                   %                    "
+cenario2linha12:   string "                   %                    "
+cenario2linha13:   string "                   %                    "
+cenario2linha14:   string "                   %                    "
+cenario2linha15:   string "                   %                    "
+cenario2linha16:   string "                   %                    "
+cenario2linha17:   string "                   %                    "
+cenario2linha18:   string "                   %                    "
+cenario2linha19:   string "                   %                    "
+cenario2linha20:   string "                   %                    "
+cenario2linha21:   string "                   %                    "
+cenario2linha22:   string "                   %                    "
+cenario2linha23:   string "                   %                    "
+cenario2linha24:   string "                   %                    "
+cenario2linha25:   string "                   %                    "
+cenario2linha26:   string "                   %                    "
+cenario2linha27:   string "                   %                    "
+cenario2linha28:   string "                   %                    "
+cenario2linha29:   string "                   %                    "
+cenario2linha30:   string "                                        "
+
+; CENÁRIO: Dois jogadores e bola na posição default
+cenario3linha1:    string "                                        "
+cenario3linha2:    string "                                        "
+cenario3linha3:    string "                                        "
+cenario3linha4:    string "                                        "
+cenario3linha5:    string "                                        "
+cenario3linha6:    string "                                        "
+cenario3linha7:    string "                                        "
+cenario3linha8:    string "                                        "
+cenario3linha9:    string "                                        "
+cenario3linha10:   string "                                        "
+cenario3linha11:   string "                                        "
+cenario3linha12:   string "                                        "
+cenario3linha13:   string "                                        "
+cenario3linha14:   string " $                                   $  "
+cenario3linha15:   string " $                 $                 $  "
+cenario3linha16:   string " $                                   $  "
+cenario3linha17:   string "                                        "
+cenario3linha18:   string "                                        "
+cenario3linha19:   string "                                        "
+cenario3linha20:   string "                                        "
+cenario3linha21:   string "                                        "
+cenario3linha22:   string "                                        "
+cenario3linha23:   string "                                        "
+cenario3linha24:   string "                                        "
+cenario3linha25:   string "                                        "
+cenario3linha26:   string "                                        "
+cenario3linha27:   string "                                        "
+cenario3linha28:   string "                                        "
+cenario3linha29:   string "                                        "
+cenario3linha30:   string "                                        "
