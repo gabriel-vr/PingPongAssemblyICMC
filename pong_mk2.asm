@@ -7,48 +7,49 @@ jmp main
 ; === VARIAVEIS ===
 ; =================
 
-; Legenda coordenadas jogadores:
-;0   +-----------> (x)
-;    |           +
-;    |
-;    |
-;    | +
-;   (y)
-posicaoXJogadorEsq: var #1              ; Coordenada X jogador esquerda. Variavel se mantem estatica no jogo
-static posicaoXJogadorEsq, #1           ; Jogador da esquerda permanece estatico na coordenada X
-posicaoYJogadorEsq: var #1              ; Posicao atual do jogador. É atualizada quando a posição do jogador deve ser atualizada
-static posicaoYJogadorEsq, #14          ; Posicao incial do jogador da esquerda (Linha central: 600 + coluna max direita + 1) = 601
-posicaoYAnteriorJogadorEsq: var #1      ; Posicao anterior do jogador. Facilita a impressão. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
-static posicaoYAnteriorJogadorEsq, #14  ; Originalmente a posicao anterior do jogador é igual a posicao atual
+    ; Legenda coordenadas jogadores:
+        ;0   +-----------> (x)
+        ;    |           +
+        ;    |
+        ;    |
+        ;    | +
+        ;   (y)
+        posicaoXJogadorEsq: var #1              ; Coordenada X jogador esquerda. Variavel se mantem estatica no jogo
+        static posicaoXJogadorEsq, #1           ; Jogador da esquerda permanece estatico na coordenada X
+        posicaoYJogadorEsq: var #1              ; Posicao atual do jogador. É atualizada quando a posição do jogador deve ser atualizada
+        static posicaoYJogadorEsq, #14          ; Posicao incial do jogador da esquerda (Linha central: 600 + coluna max direita + 1) = 601
+        posicaoYAnteriorJogadorEsq: var #1      ; Posicao anterior do jogador. Facilita a impressão. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
+        static posicaoYAnteriorJogadorEsq, #14  ; Originalmente a posicao anterior do jogador é igual a posicao atual
 
-posicaoXJogadorDir: var #37             ; Coordenada X jogador direita. Variavel se mantem estatica no jogo
-static posicaoXJogadorDir, #37          ; 
-posicaoYJogadorDir: var #1              ; Posicao atual do jogador. É atualizada quando a posicao do jogador deve ser atualizada
-static posicaoYJogadorDir, #14          ; Posicao incial do jogador da direita (Linha central: 600 + coluna max esquerda - 2) = 637
-posicaoYAnteriorJogadorDir: var #1      ; Posicao anterior do jogador. Facilita a impressao. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
-static posicaoYAnteriorJogadorDir, #14  ; Originalmente a posicao anterior do jogador é igual a posicao atual
+        posicaoXJogadorDir: var #37             ; Coordenada X jogador direita. Variavel se mantem estatica no jogo
+        static posicaoXJogadorDir, #37          ; 
+        posicaoYJogadorDir: var #1              ; Posicao atual do jogador. É atualizada quando a posicao do jogador deve ser atualizada
+        static posicaoYJogadorDir, #14          ; Posicao incial do jogador da direita (Linha central: 600 + coluna max esquerda - 2) = 637
+        posicaoYAnteriorJogadorDir: var #1      ; Posicao anterior do jogador. Facilita a impressao. É mantida a antiga quando atualiza a posicao atual do jogador e atualizada depois da impressao
+        static posicaoYAnteriorJogadorDir, #14  ; Originalmente a posicao anterior do jogador é igual a posicao atual
 
-posicaoXBola: var #1                    ; Posicao da bola, é o que guia qual a posicao atual da bola
-static posicaoXBola, #14                ; (Centro das duas posicoes (637 + 601)/2)
-posicaoXAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
-static posicaoXAnteriorBola, #14        ; Mesma posicao inical da bola
-posicaoYBola: var #1                    ; Posicao da bola, é o que guia qual a posicao atual da bola
-static posicaoYBola, #14                ; (Centro das duas posicoes (637 + 601)/2)
-posicaoYAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
-static posicaoYAnteriorBola, #14        ; Mesma posicao inical da bola
+    ; Legenda coordenada bola:
+        posicaoXBola: var #1                    ; Posicao da bola, é o que guia qual a posicao atual da bola
+        static posicaoXBola, #19                ; (Centro das duas posicoes (637 + 601)/2)
+        posicaoXAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
+        static posicaoXAnteriorBola, #19        ; Mesma posicao inical da bola
+        posicaoYBola: var #1                    ; Posicao da bola, é o que guia qual a posicao atual da bola
+        static posicaoYBola, #14                ; (Centro das duas posicoes (637 + 601)/2)
+        posicaoYAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
+        static posicaoYAnteriorBola, #14        ; Mesma posicao inical da bola
 
 
-; Legenda velocidade bola:
-;     0
-;     |
-; 0 --+-- +1
-;     |
-;    +1
-velocidadeXBola: var #1
-static velocidadeXBola, #1              ; Velocidade incial X para a direita
+        ; Legenda velocidade bola:
+        ;     0
+        ;     |
+        ; 0 --+-- +1
+        ;     |
+        ;    +1
+        velocidadeXBola: var #1
+        static velocidadeXBola, #1              ; Velocidade incial X para a direita
 
-velocidadeYBola: var #1
-static velocidadeYBola, #0              ; Velocidade incial Y para cima
+        velocidadeYBola: var #1
+        static velocidadeYBola, #1              ; Velocidade incial Y para cima
 
 
 
@@ -115,7 +116,7 @@ DELAY:
     loadn r0, #0
 
     ; loadn r2, #128        ; VARIAVEL PARA REAJUSTAR A VELOCIDADE DO JOGO
-    loadn r2, #1            ; Inicio loop externo, decrementa r2 até chegar a 0
+    loadn r2, #64            ; Inicio loop externo, decrementa r2 até chegar a 0
     DELAY_L1:
 
     loadn r1, #32768        ; Inicio do loop interno, decremente r1 até chegar a 0
@@ -135,35 +136,255 @@ DELAY:
     rts
 
 
+
 ; =========================
 ; === REPOSICIONAR BOLA ===
 ; =========================
 ; Funcao para adicionar dentro do loop para realizar a movimentação da bola
 reposicionar_bola:
-    push fr
-    push r0                             ; Salvar registradores
-    push r1
-    push r2
-    push r3
-    push r4
-    push r5
-    push r6
+    ; Salvar registradores
+        push fr
+        push r0                             
+        push r1
+        push r2
+        push r3
+        push r4
+        push r5
+        push r6
 
-    ; 1) Checar colisao bola
 
-    ; 2) Reposicionar coordenadas da bola
+    load r1, posicaoYBola
+    load r2, posicaoXBola
+    
+    ; Checar colisao bola e mudar velocidade
+    reposicionar_bola_redirecionar:
+    
+        ; Se de cima for parede mirar pra baixo
+        reposicionar_bola_redirecionar_baixo:
+            loadn r3, #1
+            cmp r1, r3
+            jne reposicionar_bola_redirecionar_cima
+            store velocidadeYBola, r3
+            jmp reposicionar_bola_redirecionar_jogadorEsq
+        
+        ; Se de baixo for parece mirar pra cima
+        reposicionar_bola_redirecionar_cima:
+            loadn r3, #28
+            cmp r1, r3
+            jne reposicionar_bola_redirecionar_jogadorEsq
+            loadn r3, #0
+            store velocidadeYBola, r3
 
-    ; 3) Reajustar imagem da bola baseado na coordenada desatualizada da bola
 
-    pop r6                              ; Reatribuir registradores
-    pop r5
-    pop r4
-    pop r3
-    pop r2
-    pop r1
-    pop r0
-    pop fr
-    rts
+
+        ; Se vai bater no jogador esquerdo
+        reposicionar_bola_redirecionar_jogadorEsq:
+            loadn r3, #2
+            cmp r2, r3
+            jne reposicionar_bola_redirecionar_jogadorDir
+        
+            load r3, posicaoYJogadorEsq
+        
+            ; meio
+                cmp r1, r3
+                jeq reposicionar_bola_redirecionar_dir
+                
+            ; 1 p cima
+                loadn r4, #1
+                sub r3, r3, r4
+                cmp r1, r3
+                jeq reposicionar_bola_redirecionar_dir
+            
+            ; 1 p baixo
+                loadn r4, #2
+                add r3, r3, r4
+                cmp r1, r3
+                jeq reposicionar_bola_redirecionar_dir
+            
+            ; quina (em função da velocidade y da bolinha)
+                load r4, velocidadeYBola
+                loadn r5, #1
+                cmp r4, r5
+                jeq reposicionar_bola_redirecionar_jogadorDir_descendo
+                
+                reposicionar_bola_redirecionar_jogadorDir_subindo:
+                    loadn r4, #1
+                    add r3, r3, r4
+                    cmp r1, r3
+                    jne reposicionar_bola_redirecionar_jogadorDir
+                    
+                    store velocidadeYBola, r4
+                    jmp reposicionar_bola_redirecionar_dir
+                    
+                reposicionar_bola_redirecionar_jogadorDir_descendo:
+                    loadn r4, #3
+                    sub r3, r3, r4
+                    cmp r1, r3
+                    jne reposicionar_bola_redirecionar_jogadorDir
+                    
+                    loadn r4, #0
+                    store velocidadeYBola, r4
+                    jmp reposicionar_bola_redirecionar_dir
+            
+            jmp reposicionar_bola_redirecionar_jogadorDir
+            reposicionar_bola_redirecionar_dir:
+                loadn r3, #1
+                store velocidadeXBola, r3
+                jmp reposicionar_bola_redirecionar_golEsq
+        
+        ; Se vai bater no jogador direito
+        reposicionar_bola_redirecionar_jogadorDir:
+            loadn r3, #36
+            cmp r2, r3
+            jne reposicionar_bola_redirecionar_golEsq
+        
+            load r3, posicaoYJogadorDir
+        
+            ; meio
+                cmp r1, r3
+                jeq reposicionar_bola_redirecionar_esq
+                
+            ; 1 p cima
+                loadn r4, #1
+                sub r3, r3, r4
+                cmp r1, r3
+                jeq reposicionar_bola_redirecionar_esq
+            
+            ; 1 p baixo
+                loadn r4, #2
+                add r3, r3, r4
+                cmp r1, r3
+                jeq reposicionar_bola_redirecionar_esq
+            
+            ; quina (em função da velocidade y da bolinha)
+                load r4, velocidadeYBola
+                loadn r5, #1
+                cmp r4, r5
+                jeq reposicionar_bola_redirecionar_jogadorDir_descendo
+                
+                reposicionar_bola_redirecionar_jogadorDir_subindo:
+                    loadn r4, #1
+                    add r3, r3, r4
+                    cmp r1, r3
+                    jne reposicionar_bola_redirecionar_golEsq
+                    
+                    store velocidadeYBola, r4
+                    jmp reposicionar_bola_redirecionar_esq
+                    
+                reposicionar_bola_redirecionar_jogadorDir_descendo:
+                    loadn r4, #3
+                    sub r3, r3, r4
+                    cmp r1, r3
+                    jne reposicionar_bola_redirecionar_golEsq
+                    
+                    loadn r4, #0
+                    store velocidadeYBola, r4
+                    jmp reposicionar_bola_redirecionar_esq
+            
+            jmp reposicionar_bola_redirecionar_golEsq
+            reposicionar_bola_redirecionar_esq:
+                loadn r3, #0
+                store velocidadeXBola, r3
+        
+        
+        
+        ; Se for gol direito marcar ponto esquerda
+        reposicionar_bola_redirecionar_golEsq:
+            loadn r3, #1
+            cmp r2, r3
+            jeq reposicionar_bola_redirecionar_golEsq
+
+        ; Se for gol esquerda marcar ponto direito
+        reposicionar_bola_redirecionar_golDir:
+            loadn r3, #37
+            cmp r2, r3
+            jeq reposicionar_bola_redirecionar_golDir
+
+
+    ; Reposicionar coordenadas da bola
+    reposicionar_bola_reposicionar:
+        loadn r4, #1
+        
+        ; Coordenada y
+        reposicionar_bola_reposicionar_vertical:
+            load r3, velocidadeYBola
+            cmp r3, r4
+            jeq reposicionar_bola_reposicionar_vertical_baixo
+            
+            reposicionar_bola_reposicionar_vertical_cima:
+                sub r1, r1, r4
+                store posicaoYBola, r1
+                jmp reposicionar_bola_reposicionar_horizontal
+            
+            reposicionar_bola_reposicionar_vertical_baixo:
+                add r1, r1, r4
+                store posicaoYBola, r1
+        
+        ; Coordenada x
+        reposicionar_bola_reposicionar_horizontal:
+            load r3, velocidadeXBola
+            cmp r3, r4
+            jeq reposicionar_bola_reposicionar_horizontal_dir
+            
+            reposicionar_bola_reposicionar_horizontal_esq:
+                sub r2, r2, r4
+                store posicaoXBola, r2
+                jmp reposicionar_bola_imagem
+            
+            reposicionar_bola_reposicionar_horizontal_dir:
+                add r2, r2, r4
+                store posicaoXBola, r2
+
+
+    ; Reajustar imagem da bola
+    reposicionar_bola_imagem:
+        ; 40 * posy + posx
+            loadn r3, #40
+                
+        ; Limpar a imagem da bola
+            load r4, posicaoYAnteriorBola
+            load r5, posicaoXAnteriorBola
+            mul r4, r4, r3
+            add r4, r4, r5
+            
+            ; confere se esta na linha do meio
+            loadn r6, #19
+            cmp r5, r6
+            jeq reposicionar_bola_imagem_meio
+            
+            loadn r5, #' '
+            jmp reposicionar_bola_imagem_escreve
+            
+            reposicionar_bola_imagem_meio:
+            loadn r5, #'%'
+            
+            reposicionar_bola_imagem_escreve:
+            outchar r5, r4
+            
+        load r4, posicaoYBola
+        load r5, posicaoXBola
+        ; Ajustar os valores anteriores
+            store posicaoYAnteriorBola, r4
+            store posicaoXAnteriorBola, r5
+
+        ; Escrever bola em nova posição
+            mul r4, r4, r3
+            add r4, r4, r5
+            
+            loadn r5, #'$'
+            outchar r5, r4
+
+
+    ; Reatribuir registradores
+        pop r6
+        pop r5
+        pop r4
+        pop r3
+        pop r2
+        pop r1
+        pop r0
+        pop fr
+        rts
 
 
 
@@ -258,6 +479,7 @@ reposicionar_jogadores:
     rts
 
 
+
 ; ==========================================
 ; === REPOSICIONAR JOGADOR ESQUERDA CIMA ===
 ; ==========================================
@@ -293,6 +515,7 @@ reposicionar_jogador_esq_cima:
     rts
 
 
+
 ; ===========================================
 ; === REPOSICIONAR JOGADOR ESQUERDA BAIXO ===
 ; ===========================================
@@ -326,6 +549,7 @@ reposicionar_jogador_esq_baixo:
     pop r0
     pop fr
     rts
+
 
 
 ; =========================================
@@ -741,161 +965,162 @@ zera_tela:
 ; =============
 
 ; CENARIO 0: CENARIO VAZIO
-cenario0linha1:    string "                                        "
-cenario0linha2:    string "                                        "
-cenario0linha3:    string "                                        "
-cenario0linha4:    string "                                        "
-cenario0linha5:    string "                                        "
-cenario0linha6:    string "                                        "
-cenario0linha7:    string "                                        "
-cenario0linha8:    string "                                        "
-cenario0linha9:    string "                                        "
-cenario0linha10:   string "                                        "
-cenario0linha11:   string "                                        "
-cenario0linha12:   string "                                        "
-cenario0linha13:   string "                                        "
-cenario0linha14:   string "                                        "
-cenario0linha15:   string "                                        "
-cenario0linha16:   string "                                        "
-cenario0linha17:   string "                                        "
-cenario0linha18:   string "                                        "
-cenario0linha19:   string "                                        "
-cenario0linha20:   string "                                        "
-cenario0linha21:   string "                                        "
-cenario0linha22:   string "                                        "
-cenario0linha23:   string "                                        "
-cenario0linha24:   string "                                        "
-cenario0linha25:   string "                                        "
-cenario0linha26:   string "                                        "
-cenario0linha27:   string "                                        "
-cenario0linha28:   string "                                        "
-cenario0linha29:   string "                                        "
-cenario0linha30:   string "                                        "
+    cenario0linha1:    string "                                        "
+    cenario0linha2:    string "                                        "
+    cenario0linha3:    string "                                        "
+    cenario0linha4:    string "                                        "
+    cenario0linha5:    string "                                        "
+    cenario0linha6:    string "                                        "
+    cenario0linha7:    string "                                        "
+    cenario0linha8:    string "                                        "
+    cenario0linha9:    string "                                        "
+    cenario0linha10:   string "                                        "
+    cenario0linha11:   string "                                        "
+    cenario0linha12:   string "                                        "
+    cenario0linha13:   string "                                        "
+    cenario0linha14:   string "                                        "
+    cenario0linha15:   string "                                        "
+    cenario0linha16:   string "                                        "
+    cenario0linha17:   string "                                        "
+    cenario0linha18:   string "                                        "
+    cenario0linha19:   string "                                        "
+    cenario0linha20:   string "                                        "
+    cenario0linha21:   string "                                        "
+    cenario0linha22:   string "                                        "
+    cenario0linha23:   string "                                        "
+    cenario0linha24:   string "                                        "
+    cenario0linha25:   string "                                        "
+    cenario0linha26:   string "                                        "
+    cenario0linha27:   string "                                        "
+    cenario0linha28:   string "                                        "
+    cenario0linha29:   string "                                        "
+    cenario0linha30:   string "                                        "
 
 ; CENÁRIO: Limites lateriais jogo de ping-pong
-cenario1linha1:    string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
-cenario1linha2:    string "&                                     ! "
-cenario1linha3:    string "&                                     ! "
-cenario1linha4:    string "&                                     ! "
-cenario1linha5:    string "&                                     ! "
-cenario1linha6:    string "&                                     ! "
-cenario1linha7:    string "&                                     ! "
-cenario1linha8:    string "&                                     ! "
-cenario1linha9:    string "&                                     ! "
-cenario1linha10:   string "&                                     ! "
-cenario1linha11:   string "&                                     ! "
-cenario1linha12:   string "&                                     ! "
-cenario1linha13:   string "&                                     ! "
-cenario1linha14:   string "&                                     ! "
-cenario1linha15:   string "&                                     ! "
-cenario1linha16:   string "&                                     ! "
-cenario1linha17:   string "&                                     ! "
-cenario1linha18:   string "&                                     ! "
-cenario1linha19:   string "&                                     ! "
-cenario1linha20:   string "&                                     ! "
-cenario1linha21:   string "&                                     ! "
-cenario1linha22:   string "&                                     ! "
-cenario1linha23:   string "&                                     ! "
-cenario1linha24:   string "&                                     ! "
-cenario1linha25:   string "&                                     ! "
-cenario1linha26:   string "&                                     ! "
-cenario1linha27:   string "&                                     ! "
-cenario1linha28:   string "&                                     ! "
-cenario1linha29:   string "&                                     ! "
-cenario1linha30:   string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
+    cenario1linha1:    string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
+    cenario1linha2:    string "&                                     ! "
+    cenario1linha3:    string "&                                     ! "
+    cenario1linha4:    string "&                                     ! "
+    cenario1linha5:    string "&                                     ! "
+    cenario1linha6:    string "&                                     ! "
+    cenario1linha7:    string "&                                     ! "
+    cenario1linha8:    string "&                                     ! "
+    cenario1linha9:    string "&                                     ! "
+    cenario1linha10:   string "&                                     ! "
+    cenario1linha11:   string "&                                     ! "
+    cenario1linha12:   string "&                                     ! "
+    cenario1linha13:   string "&                                     ! "
+    cenario1linha14:   string "&                                     ! "
+    cenario1linha15:   string "&                                     ! "
+    cenario1linha16:   string "&                                     ! "
+    cenario1linha17:   string "&                                     ! "
+    cenario1linha18:   string "&                                     ! "
+    cenario1linha19:   string "&                                     ! "
+    cenario1linha20:   string "&                                     ! "
+    cenario1linha21:   string "&                                     ! "
+    cenario1linha22:   string "&                                     ! "
+    cenario1linha23:   string "&                                     ! "
+    cenario1linha24:   string "&                                     ! "
+    cenario1linha25:   string "&                                     ! "
+    cenario1linha26:   string "&                                     ! "
+    cenario1linha27:   string "&                                     ! "
+    cenario1linha28:   string "&                                     ! "
+    cenario1linha29:   string "&                                     ! "
+    cenario1linha30:   string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
 
 ; CENÁRIO: Rede do jogo de ping-pong
-cenario2linha1:    string "                                        "
-cenario2linha2:    string "                   %                    "
-cenario2linha3:    string "                   %                    "
-cenario2linha4:    string "                   %                    "
-cenario2linha5:    string "                   %                    "
-cenario2linha6:    string "                   %                    "
-cenario2linha7:    string "                   %                    "
-cenario2linha8:    string "                   %                    "
-cenario2linha9:    string "                   %                    "
-cenario2linha10:   string "                   %                    "
-cenario2linha11:   string "                   %                    "
-cenario2linha12:   string "                   %                    "
-cenario2linha13:   string "                   %                    "
-cenario2linha14:   string "                   %                    "
-cenario2linha15:   string "                   %                    "
-cenario2linha16:   string "                   %                    "
-cenario2linha17:   string "                   %                    "
-cenario2linha18:   string "                   %                    "
-cenario2linha19:   string "                   %                    "
-cenario2linha20:   string "                   %                    "
-cenario2linha21:   string "                   %                    "
-cenario2linha22:   string "                   %                    "
-cenario2linha23:   string "                   %                    "
-cenario2linha24:   string "                   %                    "
-cenario2linha25:   string "                   %                    "
-cenario2linha26:   string "                   %                    "
-cenario2linha27:   string "                   %                    "
-cenario2linha28:   string "                   %                    "
-cenario2linha29:   string "                   %                    "
-cenario2linha30:   string "                                        "
+    cenario2linha1:    string "                                        "
+    cenario2linha2:    string "                   %                    "
+    cenario2linha3:    string "                   %                    "
+    cenario2linha4:    string "                   %                    "
+    cenario2linha5:    string "                   %                    "
+    cenario2linha6:    string "                   %                    "
+    cenario2linha7:    string "                   %                    "
+    cenario2linha8:    string "                   %                    "
+    cenario2linha9:    string "                   %                    "
+    cenario2linha10:   string "                   %                    "
+    cenario2linha11:   string "                   %                    "
+    cenario2linha12:   string "                   %                    "
+    cenario2linha13:   string "                   %                    "
+    cenario2linha14:   string "                   %                    "
+    cenario2linha15:   string "                   %                    "
+    cenario2linha16:   string "                   %                    "
+    cenario2linha17:   string "                   %                    "
+    cenario2linha18:   string "                   %                    "
+    cenario2linha19:   string "                   %                    "
+    cenario2linha20:   string "                   %                    "
+    cenario2linha21:   string "                   %                    "
+    cenario2linha22:   string "                   %                    "
+    cenario2linha23:   string "                   %                    "
+    cenario2linha24:   string "                   %                    "
+    cenario2linha25:   string "                   %                    "
+    cenario2linha26:   string "                   %                    "
+    cenario2linha27:   string "                   %                    "
+    cenario2linha28:   string "                   %                    "
+    cenario2linha29:   string "                   %                    "
+    cenario2linha30:   string "                                        "
 
 ; CENÁRIO: Dois jogadores e bola na posição default
-cenario3linha1:    string "                                        "
-cenario3linha2:    string "                                        "
-cenario3linha3:    string "                                        "
-cenario3linha4:    string "                                        "
-cenario3linha5:    string "                                        "
-cenario3linha6:    string "                                        "
-cenario3linha7:    string "                                        "
-cenario3linha8:    string "                                        "
-cenario3linha9:    string "                                        "
-cenario3linha10:   string "                                        "
-cenario3linha11:   string "                                        "
-cenario3linha12:   string "                                        "
-cenario3linha13:   string "                                        "
-cenario3linha14:   string " $                                   $  "
-cenario3linha15:   string " $                 $                 $  "
-cenario3linha16:   string " $                                   $  "
-cenario3linha17:   string "                                        "
-cenario3linha18:   string "                                        "
-cenario3linha19:   string "                                        "
-cenario3linha20:   string "                                        "
-cenario3linha21:   string "                                        "
-cenario3linha22:   string "                                        "
-cenario3linha23:   string "                                        "
-cenario3linha24:   string "                                        "
-cenario3linha25:   string "                                        "
-cenario3linha26:   string "                                        "
-cenario3linha27:   string "                                        "
-cenario3linha28:   string "                                        "
-cenario3linha29:   string "                                        "
-cenario3linha30:   string "                                        "
+    cenario3linha1:    string "                                        "
+    cenario3linha2:    string "                                        "
+    cenario3linha3:    string "                                        "
+    cenario3linha4:    string "                                        "
+    cenario3linha5:    string "                                        "
+    cenario3linha6:    string "                                        "
+    cenario3linha7:    string "                                        "
+    cenario3linha8:    string "                                        "
+    cenario3linha9:    string "                                        "
+    cenario3linha10:   string "                                        "
+    cenario3linha11:   string "                                        "
+    cenario3linha12:   string "                                        "
+    cenario3linha13:   string "                                        "
+    cenario3linha14:   string " $                                   $  "
+    cenario3linha15:   string " $                 $                 $  "
+    cenario3linha16:   string " $                                   $  "
+    cenario3linha17:   string "                                        "
+    cenario3linha18:   string "                                        "
+    cenario3linha19:   string "                                        "
+    cenario3linha20:   string "                                        "
+    cenario3linha21:   string "                                        "
+    cenario3linha22:   string "                                        "
+    cenario3linha23:   string "                                        "
+    cenario3linha24:   string "                                        "
+    cenario3linha25:   string "                                        "
+    cenario3linha26:   string "                                        "
+    cenario3linha27:   string "                                        "
+    cenario3linha28:   string "                                        "
+    cenario3linha29:   string "                                        "
+    cenario3linha30:   string "                                        "
 
 ; CENÁRIO: Dois jogadores e bola na posição default
-cenario4linha1:    string "                                        "
-cenario4linha2:    string "                                        "
-cenario4linha3:    string "                                        "
-cenario4linha4:    string "                                        "
-cenario4linha5:    string "                                        "
-cenario4linha6:    string "                                        "
-cenario4linha7:    string "                                        "
-cenario4linha8:    string "                                        "
-cenario4linha9:    string "                                        "
-cenario4linha10:   string "                                        "
-cenario4linha11:   string "                                        "
-cenario4linha12:   string "                                        "
-cenario4linha13:   string "                                        "
-cenario4linha14:   string "                                        "
-cenario4linha15:   string "  Para iniciar o jogo pressione ENTER:  "
-cenario4linha16:   string "                                        "
-cenario4linha17:   string "                                        "
-cenario4linha18:   string "                                        "
-cenario4linha19:   string "                                        "
-cenario4linha20:   string "                                        "
-cenario4linha21:   string "                                        "
-cenario4linha22:   string "                                        "
-cenario4linha23:   string "                                        "
-cenario4linha24:   string "                                        "
-cenario4linha25:   string "                                        "
-cenario4linha26:   string "                                        "
-cenario4linha27:   string "                                        "
-cenario4linha28:   string "                                        "
-cenario4linha29:   string "                                        "
-cenario4linha30:   string "                                        "
+    cenario4linha1:    string "                                        "
+    cenario4linha2:    string "                                        "
+    cenario4linha3:    string "                                        "
+    cenario4linha4:    string "                                        "
+    cenario4linha5:    string "                                        "
+    cenario4linha6:    string "                                        "
+    cenario4linha7:    string "                                        "
+    cenario4linha8:    string "                                        "
+    cenario4linha9:    string "                                        "
+    cenario4linha10:   string "                                        "
+    cenario4linha11:   string "                                        "
+    cenario4linha12:   string "                                        "
+    cenario4linha13:   string "                                        "
+    cenario4linha14:   string "                                        "
+    cenario4linha15:   string "  Para iniciar o jogo pressione ENTER:  "
+    cenario4linha16:   string "                                        "
+    cenario4linha17:   string "                                        "
+    cenario4linha18:   string "                                        "
+    cenario4linha19:   string "                                        "
+    cenario4linha20:   string "                                        "
+    cenario4linha21:   string "                                        "
+    cenario4linha22:   string "                                        "
+    cenario4linha23:   string "                                        "
+    cenario4linha24:   string "                                        "
+    cenario4linha25:   string "                                        "
+    cenario4linha26:   string "                                        "
+    cenario4linha27:   string "                                        "
+    cenario4linha28:   string "                                        "
+    cenario4linha29:   string "                                        "
+    cenario4linha30:   string "                                        "
+    
