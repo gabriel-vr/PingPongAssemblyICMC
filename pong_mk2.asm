@@ -38,6 +38,11 @@ jmp main
         posicaoYAnteriorBola: var #1            ; A mesma ideia da posicao anterior ao imprimir os jogadores
         static posicaoYAnteriorBola, #14        ; Mesma posicao inical da bola
 
+    ; Placar
+        placarEsquerdo: var #1
+        static placarEsquerdo, #'0'
+        placarDireito: var #1
+        static placarDireito, #'0'
 
         ; Legenda velocidade bola:
         ;     0
@@ -71,6 +76,19 @@ main:
 
     call espera_entrada                 ; Espera caractere ENTER para iniciar o jogo
 
+reiniciar:
+    loadn r2, #'0'
+    store placarDireito, r2              ; Zera o placar
+    store placarEsquerdo, r2
+
+    loadn r2, #1                         ; Posicao inicial dos jogadores
+    loadn r3, #14
+    store posicaoXJogadorEsq, r2                    
+    store posicaoYJogadorEsq, r3
+    loadn r2, #37
+    store posicaoXJogadorDir, r2                    
+    store posicaoYJogadorDir, r3 
+
     call zera_tela                      ; Apaga a tela para iniciar o jogo
 
     loadn r0, #cenario1linha1           ; Endereco para o cenario default
@@ -95,6 +113,10 @@ main:
     call reposicionar_jogadores
 
     call reposicionar_bola
+
+    call atualiza_placar
+
+    call verifica_ganhador
 
     call DELAY
     jmp loop 
@@ -211,7 +233,7 @@ reposicionar_bola:
                     loadn r4, #1
                     add r3, r3, r4
                     cmp r1, r3
-                    jne reposicionar_bola_redirecionar_jogadorDir
+                    jne reposicionar_bola_reposicionar
                     
                     store velocidadeYBola, r4
                     jmp reposicionar_bola_redirecionar_dir
@@ -220,7 +242,7 @@ reposicionar_bola:
                     loadn r4, #3
                     sub r3, r3, r4
                     cmp r1, r3
-                    jne reposicionar_bola_redirecionar_jogadorDir
+                    jne reposicionar_bola_reposicionar
                     
                     loadn r4, #0
                     store velocidadeYBola, r4
@@ -266,7 +288,7 @@ reposicionar_bola:
                     loadn r4, #1
                     add r3, r3, r4
                     cmp r1, r3
-                    jne reposicionar_bola_redirecionar_golEsq
+                    jne reposicionar_bola_reposicionar
                     
                     store velocidadeYBola, r4
                     jmp reposicionar_bola_redirecionar_esq
@@ -275,30 +297,55 @@ reposicionar_bola:
                     loadn r4, #3
                     sub r3, r3, r4
                     cmp r1, r3
-                    jne reposicionar_bola_redirecionar_golEsq
+                    jne reposicionar_bola_reposicionar
                     
                     loadn r4, #0
                     store velocidadeYBola, r4
                     jmp reposicionar_bola_redirecionar_esq
             
-            jmp reposicionar_bola_redirecionar_golEsq
+            jmp reposicionar_bola_redirecionar_golDir
             reposicionar_bola_redirecionar_esq:
                 loadn r3, #0
                 store velocidadeXBola, r3
         
         
-        
-        ; Se for gol direito marcar ponto esquerda
+        ; Se for gol esquerdo marcar ponto direito
         reposicionar_bola_redirecionar_golEsq:
             loadn r3, #1
             cmp r2, r3
-            jeq reposicionar_bola_redirecionar_golEsq
+            jeq incrementa_placar_direito
 
-        ; Se for gol esquerda marcar ponto direito
+        ; Se for gol direito marcar ponto esquerdo
         reposicionar_bola_redirecionar_golDir:
             loadn r3, #37
             cmp r2, r3
-            jeq reposicionar_bola_redirecionar_golDir
+            jeq incrementa_placar_esquerdo
+
+
+        jmp reposicionar_bola_reposicionar
+
+        ; Incrementa placar esquerdo
+        incrementa_placar_esquerdo:
+            loadn r5, #1                
+            load r4, placarEsquerdo
+            add r4, r4, r5;
+            store placarEsquerdo, r4
+            jmp posiciona_bola_meio
+
+        ; Incrementa placar direito
+        incrementa_placar_direito:
+            loadn r5, #1                
+            load r4, placarDireito
+            add r4, r4, r5;
+            store placarDireito, r4
+
+        ; Posiciona a bola na posicao central
+        posiciona_bola_meio:
+            loadn r4, #19
+            loadn r5, #14
+            store posicaoXBola, r4 
+            store posicaoYBola, r5
+            jmp reposicionar_bola_imagem
 
 
     ; Reposicionar coordenadas da bola
@@ -654,7 +701,7 @@ reposicionar_jogador_dir_cima:
 ; ==========================================
 ; === REPOSICIONAR JOGADOR DIREITA BAIXO ===
 ; ==========================================
-; Recalcular as variaveis de posicao do jogador para da direita se mover para cima
+; Recalcular as variaveis de posicao do jogador da direita se mover para cima
 reposicionar_jogador_dir_baixo:
     push fr
     push r0                                     ; Salva registradores
@@ -748,6 +795,87 @@ reajustar_imagem_jogador_dir:
     pop fr
     rts
 
+
+; =======================
+; === ATUALIZA PLACAR ===
+; =======================
+; Incrementa o placar se algum jogador pontuou.
+atualiza_placar:
+    push fr
+    push r0                     ; Salvar registradores
+    push r1
+    push r2
+    push r3
+
+    load r0, placarEsquerdo
+    loadn r1, #18
+    load r2, placarDireito
+    loadn r3, #20
+
+    outchar r0, r1
+    outchar r2, r3
+
+    pop r3                      ; Recarregar os registradores
+    pop r2
+    pop r1
+    pop r0
+    pop fr
+    rts
+
+
+; =========================
+; === Verifica ganhador ===
+; =========================
+; Verifica se algum jogador atingiu 3 pontos e indica o ganhador
+verifica_ganhador:
+    push fr
+    push r0                     ; Salvar registradores
+    push r1
+    push r2
+    push r3
+
+    load r0, placarEsquerdo     ; Carrega pontuacao do jogador esquerdo
+    load r1, placarDireito      ; Carrega pontuacao do jogador direito
+    loadn r2, #'3'              ; Pontuacao maxima
+
+    cmp r0, r2
+    jeq jogador_esquerdo
+
+    cmp r1, r2
+    jeq jogador_direito
+
+    jmp verifica_ganhador_out
+
+jogador_esquerdo:
+    loadn r0, #cenario5_esquerda
+    jmp imprime_resultado
+
+jogador_direito:
+    loadn r0, #cenario5_direita
+
+imprime_resultado:
+    loadn r2, #0                    ; Cor branco
+
+    call zera_tela
+
+    loadn r1, #560               
+    call imprime_string_sobre
+
+    loadn r0, #cenario5_reiniciar   ; String indicando para pressionar ENTER
+    loadn r1, #640               
+    call imprime_string_sobre
+
+    call espera_entrada
+    jmp reiniciar
+
+
+verifica_ganhador_out:
+    pop r3                      ; Recarregar os registradores
+    pop r2
+    pop r1
+    pop r0
+    pop fr
+    rts
 
 
 ; =============================
@@ -997,7 +1125,7 @@ zera_tela:
     cenario0linha30:   string "                                        "
 
 ; CENÁRIO: Limites lateriais jogo de ping-pong
-    cenario1linha1:    string "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ "
+    cenario1linha1:    string "$$$$$$$$$$$$$$$$$$ x $$$$$$$$$$$$$$$$$$ "
     cenario1linha2:    string "&                                     ! "
     cenario1linha3:    string "&                                     ! "
     cenario1linha4:    string "&                                     ! "
@@ -1124,3 +1252,8 @@ zera_tela:
     cenario4linha29:   string "                                        "
     cenario4linha30:   string "                                        "
     
+; CENARIO - Indica o ganhador
+    cenario5_direita:   string "      O jogador da direita ganhou       "
+    cenario5_esquerda:  string "      O jogador da esquerda ganhou      "
+    cenario5_reiniciar: string "    Pressione <ENTER> para reiniciar    "
+
