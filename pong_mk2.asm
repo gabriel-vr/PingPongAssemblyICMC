@@ -7,6 +7,9 @@ jmp main
 ; === VARIAVEIS ===
 ; =================
 
+	iterador: var #1
+	static iterador, #67
+
     ; Legenda coordenadas jogadores:
         ;0   +-----------> (x)
         ;    |           +
@@ -102,6 +105,9 @@ reiniciar:
     loadn r0, #cenario3linha1           ; Endereço para posicionar jogadores e bolinha
     loadn r2, #0                        ; Cor. Branco=0
     call imprime_tela_sobre             ; Imprime cenario sobre o ja existente
+    
+    loadn r0, #0
+    store iterador, r0
 
 
     ; ============
@@ -109,17 +115,23 @@ reiniciar:
     ; ============
     ; Loop principal do programa
     loop:
-    
-    call reposicionar_jogadores
+		load r3, iterador
+		inc r3
+		store iterador, r3
+		call reposicionar_jogadores
+		call DELAY
 
-    call reposicionar_bola
+		loadn r4, #2
+		mod r3, r3, r4
+		loadn r4, #0
+		cmp r3, r4
+		jeq loop
 
-    call atualiza_placar
+	    call reposicionar_bola
+	    call atualiza_placar
+	    call verifica_ganhador
 
-    call verifica_ganhador
-
-    call DELAY
-    jmp loop 
+	    jmp loop
     halt
 
 
@@ -137,11 +149,13 @@ DELAY:
 
     loadn r0, #0
 
-    ; loadn r2, #128        ; VARIAVEL PARA REAJUSTAR A VELOCIDADE DO JOGO
-    loadn r2, #64            ; Inicio loop externo, decrementa r2 até chegar a 0
+    ; VARIAVEL PARA REAJUSTAR A VELOCIDADE DO JOGO
+    loadn r2, #1000            ; Inicio loop externo, decrementa r2 até chegar a 0
+    load r3, iterador
+    sub r2, r2, r3
     DELAY_L1:
 
-    loadn r1, #32768        ; Inicio do loop interno, decremente r1 até chegar a 0
+    loadn r1, #1000        ; Inicio do loop interno, decremente r1 até chegar a 0
     DELAY_L2:
     dec r1                  ; Parte para decrementar o valor de r1
     cmp r1, r0
