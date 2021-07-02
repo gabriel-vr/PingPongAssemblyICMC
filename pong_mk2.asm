@@ -95,14 +95,18 @@ reiniciar:
     call zera_tela                      ; Apaga a tela para iniciar o jogo
 
     loadn r0, #cenario1linha1           ; Endereco para o cenario default
-    loadn r2, #0                        ; Cor do cenario. Branco=#0
+    loadn r2, #512                      ; Cor do cenario. Verde=#512
     call imprime_tela_absoluto          ; Imprime o cenario vazio em cima da tela vazia
 
     loadn r0, #cenario2linha1           ; Endereço para rede do jogo
-    loadn r2, #0                        ; Cor do cenario. Branco=0
+    loadn r2, #3328                        ; Cor do cenario. Roxo=3328
     call imprime_tela_sobre             ; Imprime cenario sobre o ja existente
 
-    loadn r0, #cenario3linha1           ; Endereço para posicionar jogadores e bolinha
+    loadn r0, #cenario3linha1           ; Endereço para posicionar jogadores
+    loadn r2, #2304                        ; Cor. Vermoelho=2304
+    call imprime_tela_sobre             ; Imprime cenario sobre o ja existente
+
+    loadn r0, #cenario6linha1           ; Endereço para posicionar  bolinha
     loadn r2, #0                        ; Cor. Branco=0
     call imprime_tela_sobre             ; Imprime cenario sobre o ja existente
     
@@ -418,6 +422,9 @@ reposicionar_bola:
             
             reposicionar_bola_imagem_meio:
             loadn r5, #'%'
+            loadn r6, #3328
+
+            add r5, r5, r6
             
             reposicionar_bola_imagem_escreve:
             outchar r5, r4
@@ -499,14 +506,14 @@ reposicionar_jogadores:
     inchar r1                           ; Le entrada para controlar a nave
 
     ; [DEBUG]. Parte de código foi utilizada nessa funcao para mostrar no canto superior esquerdo qual o valor do teclado encontrado
-    push fr
-    loadn r3, #255
-    cmp r1, r3
-    jeq A
-    loadn r3, #0
-    outchar r1, r3
-    A:
-    pop fr
+    ;push fr
+    ;loadn r3, #255
+    ;cmp r1, r3
+    ;jeq A
+    ;loadn r3, #0
+    ;outchar r1, r3
+    ;A:
+    ;pop fr
     ; [FIM DEBUG]. Pode ser removido inteiro sem prejudicar o programa
 
     ; Identificando comandos para o jogador da esquerda
@@ -648,7 +655,9 @@ reajustar_imagem_jogador_esq:
     load r1, posicaoXJogadorEsq                 ; r1 recebe a coordenada X do jogador
 
     ; Reatribuir(com o caractere '$') todo o delta y ocupado pelo jogador da esquerda
-    loadn r3, #'$'                              ; Espaço para colocar nas posicoes
+    loadn r3, #'$'
+    loadn r7, #2304
+    add r3, r3, r7                              ; Espaço para colocar nas posicoes
     loadn r2, #40                               ; Quantidade de incremento
 
     mul r0, r0, r2                              ; Acha linha do jogador multiplicando coordenada Y * 40 (numeros de coluna por linha)
@@ -783,7 +792,9 @@ reajustar_imagem_jogador_dir:
     load r1, posicaoXJogadorDir                 ; r1 recebe a coordenada X do jogador
 
     ; Reatribuir(com o caractere '$') todo o delta y ocupado pelo jogador da direita
-    loadn r3, #'$'                              ; Espaço para colocar nas posicoes
+    loadn r3, #'$'
+    loadn r7, #2304
+    add r3, r3, r7                           ; Espaço para colocar nas posicoes
     loadn r2, #40                               ; Quantidade de incremento
 
     mul r0, r0, r2                              ; Acha linha do jogador multiplicando coordenada Y * 40 (numeros de coluna por linha)
@@ -1217,7 +1228,7 @@ zera_tela:
     cenario3linha12:   string "                                        "
     cenario3linha13:   string "                                        "
     cenario3linha14:   string " $                                   $  "
-    cenario3linha15:   string " $                 $                 $  "
+    cenario3linha15:   string " $                                   $  "
     cenario3linha16:   string " $                                   $  "
     cenario3linha17:   string "                                        "
     cenario3linha18:   string "                                        "
@@ -1270,4 +1281,37 @@ zera_tela:
     cenario5_direita:   string "      O jogador da direita ganhou       "
     cenario5_esquerda:  string "      O jogador da esquerda ganhou      "
     cenario5_reiniciar: string "    Pressione <ENTER> para reiniciar    "
+
+
+; CENÁRIO: Dois jogadores e bola na posição default
+    cenario6linha1:    string "                                        "
+    cenario6linha2:    string "                                        "
+    cenario6linha3:    string "                                        "
+    cenario6linha4:    string "                                        "
+    cenario6linha5:    string "                                        "
+    cenario6linha6:    string "                                        "
+    cenario6linha7:    string "                                        "
+    cenario6linha8:    string "                                        "
+    cenario6linha9:    string "                                        "
+    cenario6linha10:   string "                                        "
+    cenario6linha11:   string "                                        "
+    cenario6linha12:   string "                                        "
+    cenario6linha13:   string "                                        "
+    cenario6linha14:   string "                                        "
+    cenario6linha15:   string "                   $                    "
+    cenario6linha16:   string "                                        "
+    cenario6linha17:   string "                                        "
+    cenario6linha18:   string "                                        "
+    cenario6linha19:   string "                                        "
+    cenario6linha20:   string "                                        "
+    cenario6linha21:   string "                                        "
+    cenario6linha22:   string "                                        "
+    cenario6linha23:   string "                                        "
+    cenario6linha24:   string "                                        "
+    cenario6linha25:   string "                                        "
+    cenario6linha26:   string "                                        "
+    cenario6linha27:   string "                                        "
+    cenario6linha28:   string "                                        "
+    cenario6linha29:   string "                                        "
+    cenario6linha30:   string "                                        "
 
