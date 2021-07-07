@@ -4,7 +4,7 @@ suporte para entrada e saída de dados para realizar a lógica do jogo
 
 ## Link para o video de explicação
 
-Link aqui
+https://youtu.be/Qd3skfaLi2M
 
 ## Funcionalidades de cada Arquivo
 
