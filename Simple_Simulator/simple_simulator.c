@@ -200,6 +200,7 @@ int main()
 	int OP=0;  // ULA
 	int TECLADO;
 	ResultadoUla resultadoUla;
+	int pedaco;
 
 	le_arquivo();
 
@@ -410,7 +411,7 @@ loop:
 					break;
 
 				case MOV:
-					int pedaco = pega_pedaco(IR, 1, 0);
+					pedaco = pega_pedaco(IR, 1, 0);
 					if (pedaco == 0) {
 						selM2 = sM4;
 						selM4 = ry;
@@ -535,7 +536,7 @@ loop:
 
 				case PUSH:
 					selM1 = sSP;
-					selM3 = peda_pedaco(IR, 6, 6) == 0 ? rx : 8;
+					selM3 = pega_pedaco(IR, 6, 6) == 0 ? rx : 8;
 					selM5 = sM3;
 					RW = WRITE_DATA;
 					DecSP = YES;
