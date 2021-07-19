@@ -15,6 +15,12 @@ Do todos os comandos...
 #define TAMANHO_MEMORIA 32768
 #define MAX_VAL 65535
 
+#define YES 1
+#define NO 0
+
+#define WRITE_DATA 1	/* Define to specify that RW is setted to WRITE DATA IN MEMORY OR REGISTER */
+#define READ_DATA 0		/* Define to specify that RW is setted to READ DATA FROM MEMORY OR REGISTER */
+
 // Estados do Processador
 #define STATE_RESET 0
 #define STATE_FETCH 1
@@ -235,10 +241,10 @@ loop:
 	rz = pega_pedaco(IR,3,1);
 	
 	// Coloca valor do Mux2 para o registrador com Load
-	if(LoadReg[rx]) reg[rx] = M2;
+	if(LoadReg[rx] == YES) reg[rx] = M2;
 
 	// Operacao de Escrita da Memoria
-	if (RW == 1) MEMORY[M1] = M5;
+	if (RW == WRITE_DATA) MEMORY[M1] = M5;
 
 	// ---------------------------------------
 
@@ -246,7 +252,7 @@ loop:
 	for(i=0;i<8;i++)
 		LoadReg[i] = 0;
 
-	RW = 0;
+	RW = READ_DATA;
 
 	LoadIR  = 0;
 	LoadMAR = 0;
@@ -281,7 +287,7 @@ loop:
 			MAR = 0;
 			SP = TAMANHO_MEMORIA -1;
 
-			RW = 0;
+			RW = READ_DATA;
 			DATA_OUT = 0;  // Barramento de saida de Dados da Memoria
 
 			LoadIR  = 0;
@@ -308,7 +314,7 @@ loop:
 			//IR = MEMORY[PC];
 
 			selM1 = sPC;
-			RW = 0;
+			RW = READ_DATA;
 			LoadIR = 1;
 			IncPC = 1;
 
@@ -335,7 +341,7 @@ loop:
 
 					TECLADO = pega_pedaco(TECLADO,7,0);
 					selM2 = sTECLADO;
-					LoadReg[rx] = 1;
+					LoadReg[rx] = YES;
 
 					// -----------------------------
 					state=STATE_FETCH;
@@ -351,9 +357,9 @@ loop:
 					// reg[rx] = mem[PC];
 					// PC++;
 					selM1 = sPC;
-					RW = 0;
+					RW = READ_DATA;
 					selM2 = sDATA_OUT;
-					LoadReg[rx] = 1;
+					LoadReg[rx] = YES;
 					IncPC = 1;
 					// -----------------------------
 					state=STATE_FETCH;
@@ -363,37 +369,59 @@ loop:
 					// MAR = MEMORY[PC];
 					// PC++;
 					selM1 = sPC;
-					RW = 0;
-					LoadMAR = 1; 
-					IncPC = 1;
+					RW = READ_DATA;
+					LoadMAR = YES; 
+					IncPC = YES;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case LOADINDEX:
 					// reg[rx] = MEMORY[reg[ry]];
-					
+					selM1 = sM4;
+					selM2 = sDATA_OUT;
+					selM4 = ry;
+					RW = READ_DATA;
+					LoadReg[rx] = YES;
 					// -----------------------------
-					state=STATE_FETCH;
+					state = STATE_FETCH;
 					break;
 
 				case STORE:
 					//MAR = MEMORY[PC];
 					//PC++;
-					
+					selM1 = sPC;
+					LoadMAR = YES;
+					IncPC = YES;
+					RW = READ_DATA;
 					// -----------------------------
-					state=STATE_EXECUTE;
+					state = STATE_EXECUTE;
 					break;
 
 				case STOREINDEX:
 					//mem[reg[rx]] = reg[ry];
-					
+					selM1 = sM4;
+					selM3 = ry;
+					selM4 = rx;
+					selM5 = sM3;
+					RW = WRITE_DATA;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
 				case MOV:
-					
+					int pedaco = pega_pedaco(IR, 1, 0);
+					if (pedaco == 0) {
+						selM2 = sM4;
+						selM4 = ry;
+						LoadReg[rx] = YES;
+					} else if (pedaco == 1) {
+						selM2 = sSP;
+						LoadReg[rx] = YES;
+					} else {
+						selM4 = rx;
+						LoadSP = 1;
+					}
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -408,21 +436,40 @@ loop:
 				case LXOR:
 				case LNOT:
 					// reg[rx] = reg[ry] + reg[rz]; // Soma ou outra operacao
-					
+					selM2 = sULA;
+					selM3 = ry;
+					selM4 = rz;
+					selM6 = sULA;
+					OP = pega_pedaco(IR, 15, 10);
+					carry = pega_pedaco(IR, 0, 0);
+					LoadReg[rx] = YES;
+					LoadFR = YES;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
 				case INC:
 					//reg[rx]++;                                  // Inc Rx ou DEC
-					
+					selM2 = sULA;
+					selM3 = rx;
+					selM4 = 8;
+					selM6 = sULA;
+					OP = pega_pedaco(IR, 6, 6) == 0 ? ADD : SUB;
+					carry = NO;
+					LoadFR = YES;
+					LoadReg[rx] = YES;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
 				case CMP:   // seta 3 flags: maior, menor ou igual
 					//if(rx == ry)
-					
+					selM3 = rx;
+					selM4 = ry;
+					selM6 = sULA;
+					OP = pega_pedaco(IR, 15, 10);
+					carry = NO;
+					LoadFR = YES;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -469,7 +516,7 @@ loop:
 							|| (FR[9]==1 && (COND==13)))                          // DIVBYZERO
 					{ // PC = MEMORY[PC];
 						selM1 = sPC;
-						RW = 0;
+						RW = READ_DATA;
 						LoadPC = 1;
 					}
 					else
@@ -480,27 +527,32 @@ loop:
 					break;
 
 				case CALL:
-					
+					COND = pega_pedaco(IR, 9, 6);
+
 					state=STATE_FETCH;
 					// -----------------------------
 					break;
 
 				case PUSH:
-					
+					selM1 = sSP;
+					selM3 = peda_pedaco(IR, 6, 6) == 0 ? rx : 8;
+					selM5 = sM3;
+					RW = WRITE_DATA;
+					DecSP = YES;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
 
 				case POP:
 					//SP++;
-					
+					IncSP = YES;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
 
 				case RTS:
 					// SP++;
-					
+					IncSP = YES;
 					// -----------------------------
 					state=STATE_EXECUTE;
 					break;
@@ -530,13 +582,13 @@ loop:
 				case ADDN:
 
 					selM1 = sPC;
-					RW = 0;
+					RW = READ_DATA;
 					selM3 = ry;
 					selM4 = 9;
 
 					selM2 = sULA;
 
-					LoadReg[rx] = 1;
+					LoadReg[rx] = YES;
 
 					OP = opcode;
 
@@ -559,9 +611,9 @@ loop:
 				case LOAD:
 					//reg[rx] = MEMORY[MAR];
 					selM1 = sMAR;
-					RW = 0;
+					RW = READ_DATA;
 					selM2 = sDATA_OUT;
-					LoadReg[rx] = 1;
+					LoadReg[rx] = YES;
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -569,7 +621,7 @@ loop:
 				case STORE:
 					//MEMORY[MAR] = reg[rx];
 					selM1 = sMAR;
-					RW = 1;
+					RW = WRITE_DATA;
 					selM3 = rx;
 					selM5 = sM3;
 					// -----------------------------
@@ -578,27 +630,37 @@ loop:
 
 				case CALL:
 					selM1 = sPC;
-					RW = 0;
+					RW = READ_DATA;
 					LoadPC = 1;
 					// -----------------------------
 					state=STATE_FETCH;
 					break; 
 
 				case POP:
-					
+					selM1 = sSP;
+					RW = READ_DATA;
+					if (pega_pedaco(IR, 6, 6) == 0) {
+						selM2 = sDATA_OUT;
+						LoadReg[rx] = YES;
+					} else {
+						selM6 = sDATA_OUT;
+						LoadFR = YES;
+					}
 					// -----------------------------
 					state=STATE_FETCH;
 					break; 
 
 				case RTS:
 					//PC = MEMORY[SP];
-					
+					selM1 = sSP;
+					RW = READ_DATA;
+					LoadPC = YES;
 					// -----------------------------
 					state=STATE_EXECUTE2;
 					break;
 
 				case PUSH:
-					
+
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -610,8 +672,6 @@ loop:
 
 					state = STATE_FETCH;
 					break;
-
-
 			}
 
 			//state=STATE_EXECUTE2;
@@ -621,7 +681,7 @@ loop:
 
 			//case RTS:
 			//PC++;
-			
+			IncPC = YES;
 			// -----------------------------
 			state=STATE_FETCH;
 			break;
@@ -654,7 +714,7 @@ loop:
 	}
 
 	// Operacao de Leitura da Memoria
-	if (RW == 0) DATA_OUT = MEMORY[M1];  // Tem que vir antes do M2 que usa DATA_OUT
+	if (RW == READ_DATA) DATA_OUT = MEMORY[M1];  // Tem que vir antes do M2 que usa DATA_OUT
 	if(selM4 == 9){ 
 		M4 = DATA_OUT;
 		//printf("Selecionando DATAOUT: %d\n", DATA_OUT);
