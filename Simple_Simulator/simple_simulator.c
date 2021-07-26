@@ -591,7 +591,7 @@ loop:
 
 					LoadReg[rx] = YES;
 
-					OP = opcode;
+					OP = ADDN;
 
 					state = STATE_EXECUTE;
 
@@ -923,16 +923,19 @@ ResultadoUla ULA(unsigned int x, unsigned int y, unsigned int OP, int carry) {
 					}
 					break;
 				case ADDN:
-					if(carry==1)
-						result = x + y +FR[CARRY];
-					else
-						result = x + y;
+					result = x + y;
 					//MAX_VAL = 1111 1111 1111 1111
 					if(result > MAX_VAL){// Carry
 						auxFRbits[CARRY] = 1;
 						//result -= MAX_VAL;
 					}else 
 						auxFRbits[CARRY] = 0;
+					
+					if(result < 0)// Negative
+						auxFRbits[NEGATIVE] = 1;
+					else 
+						auxFRbits[NEGATIVE] = 0;
+					
 					break;	
 					
 				default:
