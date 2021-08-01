@@ -154,12 +154,12 @@ DELAY:
     loadn r0, #0
 
     ; VARIAVEL PARA REAJUSTAR A VELOCIDADE DO JOGO
-    loadn r2, #1000            ; Inicio loop externo, decrementa r2 até chegar a 0
+    loadn r2, #700             ; Inicio loop externo, decrementa r2 até chegar a 0
     load r3, iterador
     sub r2, r2, r3
     DELAY_L1:
 
-    loadn r1, #1000        ; Inicio do loop interno, decremente r1 até chegar a 0
+    loadn r1, #10        ; Inicio do loop interno, decremente r1 até chegar a 0
     DELAY_L2:
     dec r1                  ; Parte para decrementar o valor de r1
     cmp r1, r0
