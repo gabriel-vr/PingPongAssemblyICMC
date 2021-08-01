@@ -231,14 +231,18 @@ reposicionar_bola:
                 
             ; 1 p cima
             ; flag ADDN
-                addn r3, r3, #-1
+                ADDN r3, r3, #-1
+                breakp
                 cmp r1, r3
+                breakp
                 jeq reposicionar_bola_redirecionar_dir
             
             ; 1 p baixo
             ; flag ADDN
-                addn r3, r3, #2
+                ADDN r3, r3, #2
+                breakp
                 cmp r1, r3
+                breakp
                 jeq reposicionar_bola_redirecionar_dir
             
             ; quina (em função da velocidade y da bolinha)
@@ -249,7 +253,7 @@ reposicionar_bola:
                 
                 reposicionar_bola_redirecionar_jogadorDir_subindo:
                 ; flag ADDN
-                    addn r3, r3, #1
+                    ADDN r3, r3, #1
                     cmp r1, r3
                     jne reposicionar_bola_reposicionar
                     
@@ -258,7 +262,7 @@ reposicionar_bola:
                     
                 reposicionar_bola_redirecionar_jogadorDir_descendo:
                     ; flag ADDN
-                    addn r3, r3, #-3
+                    ADDN r3, r3, #-3
                     cmp r1, r3
                     jne reposicionar_bola_reposicionar
                     
