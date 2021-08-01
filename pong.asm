@@ -230,14 +230,14 @@ reposicionar_bola:
                 jeq reposicionar_bola_redirecionar_dir
                 
             ; 1 p cima
-                loadn r4, #1
-                sub r3, r3, r4
+            ; flag ADDN
+                addn r3, r3, #-1
                 cmp r1, r3
                 jeq reposicionar_bola_redirecionar_dir
             
             ; 1 p baixo
-                loadn r4, #2
-                add r3, r3, r4
+            ; flag ADDN
+                addn r3, r3, #2
                 cmp r1, r3
                 jeq reposicionar_bola_redirecionar_dir
             
@@ -248,8 +248,8 @@ reposicionar_bola:
                 jeq reposicionar_bola_redirecionar_jogadorDir_descendo
                 
                 reposicionar_bola_redirecionar_jogadorDir_subindo:
-                    loadn r4, #1
-                    add r3, r3, r4
+                ; flag ADDN
+                    addn r3, r3, #1
                     cmp r1, r3
                     jne reposicionar_bola_reposicionar
                     
@@ -257,8 +257,8 @@ reposicionar_bola:
                     jmp reposicionar_bola_redirecionar_dir
                     
                 reposicionar_bola_redirecionar_jogadorDir_descendo:
-                    loadn r4, #3
-                    sub r3, r3, r4
+                    ; flag ADDN
+                    addn r3, r3, #-3
                     cmp r1, r3
                     jne reposicionar_bola_reposicionar
                     
