@@ -675,7 +675,7 @@ loop:
 
 fim:
 	openGL_destroy_window();
-	//getchar();   
+	getchar();   
 	curses_destroy_window();
 	elapsed = clock() - clock_init;
 	time_elapsed = ((double)elapsed)/CLOCKS_PER_SEC;

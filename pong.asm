@@ -154,12 +154,12 @@ DELAY:
     loadn r0, #0
 
     ; VARIAVEL PARA REAJUSTAR A VELOCIDADE DO JOGO
-    loadn r2, #700             ; Inicio loop externo, decrementa r2 até chegar a 0
+    loadn r2, #1000             ; Inicio loop externo, decrementa r2 até chegar a 0
     load r3, iterador
     sub r2, r2, r3
     DELAY_L1:
 
-    loadn r1, #10        ; Inicio do loop interno, decremente r1 até chegar a 0
+    loadn r1, #1000        ; Inicio do loop interno, decremente r1 até chegar a 0
     DELAY_L2:
     dec r1                  ; Parte para decrementar o valor de r1
     cmp r1, r0
@@ -231,18 +231,18 @@ reposicionar_bola:
                 
             ; 1 p cima
             ; flag ADDN
-                ADDN r3, r3, #-1
-                breakp
+                loadn r4, #1
+                sub r3, r3, r4
+                ;ADDN r3, r3, #-1
                 cmp r1, r3
-                breakp
                 jeq reposicionar_bola_redirecionar_dir
             
             ; 1 p baixo
             ; flag ADDN
-                ADDN r3, r3, #2
-                breakp
+                loadn r4, #2
+                add r3, r3, r4
+                ;ADDN r3, r3, #2
                 cmp r1, r3
-                breakp
                 jeq reposicionar_bola_redirecionar_dir
             
             ; quina (em função da velocidade y da bolinha)
@@ -253,7 +253,9 @@ reposicionar_bola:
                 
                 reposicionar_bola_redirecionar_jogadorDir_subindo:
                 ; flag ADDN
-                    ADDN r3, r3, #1
+                    loadn r4, #1
+                    add r3, r3, r4
+                    ;ADDN r3, r3, #1
                     cmp r1, r3
                     jne reposicionar_bola_reposicionar
                     
@@ -262,7 +264,9 @@ reposicionar_bola:
                     
                 reposicionar_bola_redirecionar_jogadorDir_descendo:
                     ; flag ADDN
-                    ADDN r3, r3, #-3
+                    loadn r4, #3
+                    sub r3, r3, r4
+                    ;ADDN r3, r3, #-3
                     cmp r1, r3
                     jne reposicionar_bola_reposicionar
                     
