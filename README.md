@@ -6,8 +6,6 @@ suporte para entrada e saída de dados para realizar a lógica do jogo
 
 https://www.youtube.com/watch?v=qk7KjB4M-lU&list=PLmbETHAEF3WNqozkRmQSh9F6_DfBnCnxD
 
-## Funcionalidades de cada Arquivo
-
 ## Folder Structure
     .
     ├── assembler source        DIR: Montador da arquitetura
