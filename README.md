@@ -2,23 +2,22 @@
 Esse projeto consiste em um jogo de Ping Pong feito em Assembly para rodar no processador do ICMC. Este processador possui arquitetura Risc e utilizamos seu 
 suporte para entrada e saída de dados para realizar a lógica do jogo
 
-## Link para o video de explicação
+## Link para a playlist com apresentações
 
-https://youtu.be/Qd3skfaLi2M
+https://www.youtube.com/watch?v=qk7KjB4M-lU&list=PLmbETHAEF3WNqozkRmQSh9F6_DfBnCnxD
 
 ## Funcionalidades de cada Arquivo
 
-### Pong_mk2.asm
-Código mais atualizado do Jogo
-
-### Charmap.mif
-Mapa de caracteres utilizados para impressão do jogo no simulador
-
-### Pong.mif
-Executável do jogo no simulador do ICMC
-
-### Pong.asm
-Versão antiga do jogo (não precisa olhar esse arquivo)
+## Folder Structure
+    .
+    ├── assembler source        DIR: Montador da arquitetura
+    ├── openGL simulator        DIR: Simulador do processador com interface gráfica openGL
+    ├── others                  DIR: Pasta com arquivos alternativos (teste e documentação)
+    ├── simple simulator        DIR: Simulador do processador
+    ├── pong.asm                FILE: Arquivo fonte do jogo pong
+    ├── pong.mif                FILE: Arquivo compilado do jogo pong
+    ├── charmap.mif             FILE: Desenho dos caracteres usados no jogo
+    └── README.md
 
 ## Como o jogo funciona?
 
